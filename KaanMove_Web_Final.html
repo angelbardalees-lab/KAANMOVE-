@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ka'an Move — Movilidad con Propósito · Cancún</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   RESET & ROOT
+══════════════════════════════════════ */
+:root{
+  --teal:#0B6E7A; --teal-l:#12909F; --teal-d:#074850;
+  --gold:#C4922A; --gold-l:#D4A645;
+  --green:#1A9E6A;
+  --dark:#0C1E28; --dark2:#112230; --dark3:#162C38;
+  --mid:#1E3040; --gray:#5A7080; --gray-l:#8FA3B0;
+  --light:#EEF3F5; --lighter:#F5F8FA; --white:#FFFFFF;
+  --surface:#F0F4F6; --surface2:#E8EEF1;
+  --border:rgba(11,110,122,0.10);
+  --nav-h:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--white);color:var(--dark);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+img{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+/* ══════════════════════════════════════
+   KEYFRAMES
+══════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+@keyframes gradShift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes marqueeLTR{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(11,110,122,0.4);}70%{box-shadow:0 0 0 16px rgba(11,110,122,0);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes countUp{from{opacity:0;transform:scale(0.8);}to{opacity:1;transform:scale(1);}}
+
+/* ══════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.7s cubic-bezier(0.4,0,0.2,1),transform 0.7s cubic-bezier(0.4,0,0.2,1);}
+.reveal.delay-1{transition-delay:0.1s;}
+.reveal.delay-2{transition-delay:0.2s;}
+.reveal.delay-3{transition-delay:0.3s;}
+.reveal.delay-4{transition-delay:0.4s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--nav-h);z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 max(24px,5vw);
+  transition:background 0.4s,backdrop-filter 0.4s,box-shadow 0.4s;
+}
+nav.scrolled{
+  background:rgba(255,255,255,0.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 1px 0 rgba(0,0,0,0.08);
+}
+nav.dark{background:transparent;}
+nav.dark.scrolled{background:rgba(6,12,16,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.nav-logo{
+  display:flex;align-items:center;
+  transition:opacity 0.4s;
+}
+.nav-logo:hover{opacity:0.85;}
+.nav-logo img{
+  height:42px;width:auto;
+  /* keep legible on dark hero with a subtle white glow */
+  filter:drop-shadow(0 0 12px rgba(255,255,255,0.18));
+  transition:filter 0.4s;
+}
+nav.scrolled .nav-logo img{
+  filter:none;
+}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{font-size:14px;font-weight:500;color:rgba(255,255,255,0.75);transition:color 0.3s;}
+.nav-links a:hover{color:white;}
+nav.scrolled .nav-links a{color:var(--gray);}
+nav.scrolled .nav-links a:hover{color:var(--dark);}
+nav.dark.scrolled .nav-links a{color:rgba(255,255,255,0.65);}
+nav.dark.scrolled .nav-links a:hover{color:white;}
+.nav-cta{
+  background:var(--white);color:var(--dark);
+  font-size:13px;font-weight:700;
+  padding:8px 20px;border-radius:980px;
+  transition:all 0.2s;letter-spacing:-0.1px;
+}
+.nav-cta:hover{background:rgba(255,255,255,0.85);}
+nav.scrolled .nav-cta{background:var(--teal);color:white;}
+nav.scrolled .nav-cta:hover{background:var(--teal-l);}
+nav.dark.scrolled .nav-cta{background:var(--teal);color:white;}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+.nav-hamburger span{width:22px;height:2px;background:white;border-radius:2px;transition:all 0.3s;}
+nav.scrolled .nav-hamburger span{background:var(--dark);}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+#hero{
+  min-height:100vh;
+  background:radial-gradient(ellipse at 70% 30%, #0B3D44 0%, #040C10 60%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:120px max(24px,6vw) 80px;
+  position:relative;overflow:hidden;
+}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+.hero-orb-1{width:600px;height:600px;background:rgba(11,110,122,0.18);top:-100px;right:-100px;animation:float 10s ease-in-out infinite;}
+.hero-orb-2{width:400px;height:400px;background:rgba(196,146,42,0.08);bottom:-80px;left:-60px;animation:float 13s ease-in-out infinite reverse;}
+.hero-orb-3{width:300px;height:300px;background:rgba(26,158,106,0.07);top:40%;right:10%;animation:float 16s ease-in-out infinite 2s;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  border-radius:980px;padding:7px 18px;font-size:12px;font-weight:600;
+  color:rgba(255,255,255,0.75);letter-spacing:0.3px;
+  margin-bottom:32px;backdrop-filter:blur(8px);
+  animation:fadeUp 0.7s 0.1s both;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+.hero-headline{
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(42px,7vw,88px);
+  font-weight:800;line-height:1.05;
+  color:white;letter-spacing:-1.5px;
+  max-width:900px;margin:0 auto 24px;
+  animation:fadeUp 0.8s 0.2s both;
+}
+.hero-headline em{
+  font-style:italic;
+  background:linear-gradient(90deg,var(--teal-l),var(--gold-l));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(17px,2.2vw,22px);font-weight:400;
+  color:rgba(255,255,255,0.55);line-height:1.55;
+  max-width:560px;margin:0 auto 44px;
+  animation:fadeUp 0.8s 0.3s both;
+}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.8s 0.4s both;}
+.btn-hero-primary{
+  background:var(--white);color:var(--dark);
+  font-size:16px;font-weight:700;padding:16px 36px;
+  border-radius:980px;transition:all 0.2s;letter-spacing:-0.3px;
+}
+.btn-hero-primary:hover{background:rgba(255,255,255,0.88);transform:translateY(-1px);}
+.btn-hero-secondary{
+  background:rgba(255,255,255,0.1);color:white;border:1.5px solid rgba(255,255,255,0.2);
+  font-size:16px;font-weight:600;padding:15px 32px;
+  border-radius:980px;transition:all 0.2s;letter-spacing:-0.2px;backdrop-filter:blur(8px);
+}
+.btn-hero-secondary:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.35);}
+.hero-scroll-hint{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:rgba(255,255,255,0.3);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  animation:fadeIn 1s 1.2s both;
+}
+.scroll-arrow{width:20px;height:20px;border-right:2px solid rgba(255,255,255,0.3);border-bottom:2px solid rgba(255,255,255,0.3);transform:rotate(45deg);animation:float 1.5s ease-in-out infinite;}
+
+/* ══════════════════════════════════════
+   MARQUEE
+══════════════════════════════════════ */
+.marquee-section{background:var(--dark2);padding:20px 0;overflow:hidden;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);}
+.marquee-track{display:flex;white-space:nowrap;animation:marqueeLTR 28s linear infinite;}
+.marquee-item{
+  display:inline-flex;align-items:center;gap:12px;padding:0 40px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:0.5px;text-transform:uppercase;
+}
+.marquee-dot{width:4px;height:4px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+
+/* ══════════════════════════════════════
+   STATS SECTION
+══════════════════════════════════════ */
+#stats{padding:100px max(24px,8vw);background:var(--dark2);}
+.stats-eyebrow{font-size:13px;font-weight:700;color:var(--teal-l);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.stats-headline{
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.15;
+  letter-spacing:-0.4px;max-width:760px;margin-bottom:16px;
+  color:white;
+}
+.stats-headline em{font-style:normal;color:var(--teal-l);}
+.stats-intro{font-size:17px;color:rgba(255,255,255,0.45);line-height:1.65;max-width:640px;margin-bottom:64px;}
+.stats-intro strong{color:rgba(255,255,255,0.75);}
+
+/* crisis stat bar */
+.crisis-bar{
+  display:flex;gap:0;flex-wrap:wrap;
+  border:1px solid rgba(255,255,255,0.08);border-radius:20px;
+  overflow:hidden;margin-bottom:48px;max-width:860px;
+}
+.crisis-stat{
+  flex:1;min-width:160px;padding:28px 28px;
+  border-right:1px solid rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.03);
+}
+.crisis-stat:last-child{border-right:none;}
+.crisis-stat-n{
+  font-size:clamp(36px,4vw,54px);font-weight:800;letter-spacing:-1px;
+  color:white;line-height:1;margin-bottom:6px;
+}
+.crisis-stat-n.red{color:#F87171;}
+.crisis-stat-l{font-size:13px;font-weight:500;color:rgba(255,255,255,0.4);line-height:1.4;}
+
+/* crisis problem cards */
+.crisis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:1100px;}
+.crisis-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;padding:28px 24px;
+  transition:border-color .25s,background .25s;
+}
+.crisis-card:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15);}
+.crisis-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px;}
+.crisis-icon{font-size:28px;flex-shrink:0;}
+.crisis-badge{
+  font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  padding:4px 10px;border-radius:980px;flex-shrink:0;
+}
+.badge-red{background:rgba(248,113,113,0.15);color:#F87171;}
+.badge-orange{background:rgba(251,146,60,0.15);color:#FB923C;}
+.badge-yellow{background:rgba(250,204,21,0.12);color:#FACC15;}
+.badge-purple{background:rgba(167,139,250,0.12);color:#A78BFA;}
+.crisis-title{font-size:16px;font-weight:700;color:white;margin-bottom:8px;}
+.crisis-text{font-size:13.5px;color:rgba(255,255,255,0.45);line-height:1.6;}
+
+/* ══════════════════════════════════════
+   PILLAR SECTION (3 pillars)
+══════════════════════════════════════ */
+#pillars{background:var(--dark2);padding:100px max(24px,8vw);}
+.section-tag{display:inline-block;background:rgba(14,165,181,0.12);border:1px solid rgba(14,165,181,0.2);border-radius:980px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--teal-l);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
+.pillars-headline{
+  font-family:'DM Sans',sans-serif;font-size:clamp(30px,4vw,52px);font-weight:700;
+  line-height:1.1;letter-spacing:-0.5px;color:white;margin-bottom:72px;max-width:700px;
+}
+.pillars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;background:rgba(255,255,255,0.06);}
+.pillar-card{background:var(--dark2);padding:48px 40px;border:1px solid rgba(255,255,255,0.05);transition:background 0.3s;}
+.pillar-card:hover{background:rgba(11,110,122,0.08);}
+.pillar-icon{font-size:40px;margin-bottom:24px;}
+.pillar-title{font-size:22px;font-weight:800;color:white;margin-bottom:12px;letter-spacing:-0.5px;}
+.pillar-text{font-size:15px;font-weight:400;color:rgba(255,255,255,0.5);line-height:1.65;}
+
+/* ══════════════════════════════════════
+   PASAJERO SECTION
+══════════════════════════════════════ */
+#pasajero{padding:100px max(24px,8vw);background:var(--white);}
+.feature-split{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.feature-split.reverse{direction:rtl;}
+.feature-split.reverse > *{direction:ltr;}
+.feature-copy{max-width:480px;}
+.feature-tag{display:inline-block;background:var(--teal-gl,#E6F4F6);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:980px;margin-bottom:20px;}
+.feature-tag-green{background:#E8F8F2;color:var(--green);}
+.feature-tag-gold{background:#FDF6E8;color:var(--gold);}
+.feature-headline{font-family:'DM Sans',sans-serif;font-size:clamp(28px,3.5vw,46px);font-weight:700;line-height:1.15;letter-spacing:-0.3px;color:var(--dark);margin-bottom:20px;}
+.feature-text{font-size:17px;font-weight:400;color:var(--gray);line-height:1.65;margin-bottom:32px;}
+.feature-items{display:flex;flex-direction:column;gap:16px;margin-bottom:32px;}
+.feature-item{display:flex;align-items:flex-start;gap:14px;}
+.fi-icon{width:36px;height:36px;border-radius:10px;background:#E6F4F6;color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.fi-icon.gold{background:#FDF6E8;color:var(--gold);}
+.fi-icon.green{background:#E8F8F2;color:var(--green);}
+.fi-body{flex:1;}
+.fi-title{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+.fi-desc{font-size:13px;font-weight:400;color:var(--gray);line-height:1.5;}
+.feature-visual{
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.phone-mockup{
+  width:280px;height:580px;background:white;border-radius:40px;
+  box-shadow:0 0 0 8px #1A2830,0 0 0 10px #0C1820,0 40px 80px rgba(0,0,0,0.2);
+  overflow:hidden;position:relative;flex-shrink:0;
+}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:26px;background:#1A2830;border-radius:0 0 16px 16px;z-index:10;}
+.phone-screen{height:100%;display:flex;flex-direction:column;overflow:hidden;}
+.phone-screen-hero{padding:48px 18px 20px;color:white;}
+.phone-nav-pill{display:flex;background:rgba(255,255,255,0.12);border-radius:16px;padding:10px 14px;margin-bottom:14px;gap:10px;align-items:center;}
+.phone-nav-pill-text{font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);}
+.phone-card{background:white;margin:0 12px 10px;border-radius:16px;padding:14px;border:1px solid rgba(0,0,0,0.07);box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.phone-card-title{font-size:11px;font-weight:700;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.phone-card-big{font-size:28px;font-weight:900;color:#0B6E7A;line-height:1;margin-bottom:4px;}
+.phone-card-sub{font-size:10px;color:#999;}
+.phone-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(0,0,0,0.05);font-size:11px;}
+.phone-row-label{font-weight:600;color:#333;}
+.phone-row-val{color:#666;}
+.mock-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.mock-chip-teal{background:#E6F4F6;color:#0B6E7A;}
+.mock-chip-green{background:#E8F8F2;color:#1A9E6A;}
+.mock-chip-gold{background:#FDF6E8;color:#C4922A;}
+.float-badge{
+  position:absolute;
+  background:white;border-radius:16px;padding:12px 16px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.15);
+  font-size:12px;font-weight:700;white-space:nowrap;
+}
+
+/* ══════════════════════════════════════
+   CONDUCTOR — TRANSPARENCY
+══════════════════════════════════════ */
+#conductor{background:var(--dark);padding:120px max(24px,8vw);}
+.transparency-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(26,158,106,0.12);border:1px solid rgba(26,158,106,0.25);border-radius:980px;padding:8px 18px;font-size:12px;font-weight:700;color:#34D399;letter-spacing:0.5px;margin-bottom:28px;}
+.transparency-headline{
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(32px,4.5vw,64px);font-weight:700;line-height:1.1;
+  letter-spacing:-0.5px;color:white;margin-bottom:24px;
+}
+.transparency-headline em{font-style:normal;color:var(--teal-l);}
+.transparency-sub{font-size:clamp(17px,2vw,21px);font-weight:400;color:rgba(255,255,255,0.45);line-height:1.6;max-width:580px;margin-bottom:64px;}
+.transparency-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-bottom:64px;}
+.t-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:36px 32px;transition:border-color 0.3s,background 0.3s;}
+.t-card:hover{border-color:rgba(11,144,159,0.4);background:rgba(11,110,122,0.08);}
+.t-card-icon{font-size:32px;margin-bottom:20px;}
+.t-card-title{font-size:20px;font-weight:800;color:white;margin-bottom:10px;letter-spacing:-0.4px;}
+.t-card-text{font-size:14px;color:rgba(255,255,255,0.45);line-height:1.65;}
+.earning-calc{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:28px;padding:40px;max-width:720px;
+}
+.calc-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;}
+.calc-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.calc-row:last-child{border-bottom:none;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;margin-top:8px;}
+.calc-label{font-size:15px;font-weight:500;color:rgba(255,255,255,0.55);}
+.calc-val{font-size:17px;font-weight:700;color:white;}
+.calc-val.big{font-family:'DM Sans',sans-serif;font-size:32px;font-weight:900;color:#34D399;letter-spacing:-1px;}
+.calc-note{font-size:12px;color:rgba(255,255,255,0.25);margin-top:16px;line-height:1.6;}
+.calc-note strong{color:rgba(255,255,255,0.5);}
+
+/* ══════════════════════════════════════
+   SOCIO / B2B
+══════════════════════════════════════ */
+#socio{background:var(--surface);padding:100px max(24px,8vw);}
+.socio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;background:rgba(0,0,0,0.06);margin-top:56px;}
+.socio-feature{background:var(--surface);padding:40px 32px;border:1px solid rgba(11,110,122,0.08);transition:background 0.3s,box-shadow 0.3s;}
+.socio-feature:hover{background:white;box-shadow:0 4px 24px rgba(11,110,122,0.10);}
+.sf-icon{font-size:28px;margin-bottom:18px;}
+.sf-title{font-size:18px;font-weight:800;color:var(--dark);margin-bottom:8px;letter-spacing:-0.3px;}
+.sf-text{font-size:14px;font-weight:400;color:var(--gray);line-height:1.6;}
+
+/* ══════════════════════════════════════
+   DEMO SECTION
+══════════════════════════════════════ */
+#demo{background:radial-gradient(ellipse at 50% 0%, #0B3D44 0%, #040C10 60%);padding:100px 0 0;}
+.demo-header{text-align:center;padding:0 max(24px,6vw) 64px;}
+.demo-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(14,165,181,0.12);border:1px solid rgba(14,165,181,0.2);border-radius:980px;padding:8px 20px;font-size:12px;font-weight:700;color:var(--teal-l);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.demo-headline{font-family:'DM Sans',sans-serif;font-size:clamp(30px,4.5vw,58px);font-weight:700;line-height:1.1;letter-spacing:-0.5px;color:white;margin-bottom:18px;}
+.demo-sub{font-size:18px;font-weight:400;color:rgba(255,255,255,0.45);max-width:540px;margin:0 auto 16px;line-height:1.6;}
+.demo-iframe-wrap{
+  width:100%;
+  background:rgba(0,0,0,0.3);
+  border-top:1px solid rgba(255,255,255,0.06);
+  overflow:hidden;
+}
+.demo-iframe-wrap iframe{
+  display:block;
+  width:100%;
+  min-height:1000px;
+  border:none;
+  background:transparent;
+}
+.demo-fallback{padding:80px 24px;text-align:center;color:rgba(255,255,255,0.3);}
+
+/* ══════════════════════════════════════
+   HOW IT WORKS
+══════════════════════════════════════ */
+#como{padding:100px max(24px,8vw);background:var(--white);}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:48px;margin-top:64px;position:relative;}
+.step-num{font-family:'DM Sans',sans-serif;font-size:56px;font-weight:900;color:rgba(11,110,122,0.1);line-height:1;margin-bottom:16px;}
+.step-title{font-size:20px;font-weight:800;color:var(--dark);margin-bottom:10px;letter-spacing:-0.3px;}
+.step-text{font-size:14px;font-weight:400;color:var(--gray);line-height:1.65;}
+
+/* ══════════════════════════════════════
+   PRICING / TARIFARIO
+══════════════════════════════════════ */
+#tarifario{background:var(--dark2);padding:100px max(24px,8vw);}
+.tarifa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;background:rgba(255,255,255,0.05);margin-top:56px;}
+.tarifa-card{background:var(--dark2);padding:36px 28px;border:1px solid rgba(255,255,255,0.05);transition:background 0.3s;}
+.tarifa-card:hover{background:rgba(11,110,122,0.1);}
+.tarifa-type{font-size:12px;font-weight:700;color:var(--teal-l);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;}
+.tarifa-price{font-family:'DM Sans',sans-serif;font-size:40px;font-weight:900;color:white;letter-spacing:-1px;line-height:1;}
+.tarifa-unit{font-size:13px;color:rgba(255,255,255,0.35);margin-bottom:20px;margin-top:4px;}
+.tarifa-items{display:flex;flex-direction:column;gap:10px;}
+.tarifa-item{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.5);}
+.tarifa-item::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+.tarifa-note{
+  margin-top:48px;padding:28px 32px;background:rgba(11,110,122,0.08);
+  border:1px solid rgba(11,144,159,0.2);border-radius:20px;
+  display:flex;align-items:flex-start;gap:16px;max-width:680px;
+}
+.tarifa-note-icon{font-size:24px;flex-shrink:0;}
+.tarifa-note-text{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.65;}
+.tarifa-note-text strong{color:rgba(255,255,255,0.85);}
+
+/* ══════════════════════════════════════
+   DIRECTORIO DE CONDUCTORES
+══════════════════════════════════════ */
+#directorio{
+  background:var(--surface);
+  padding:120px max(24px,8vw);
+}
+.dir-header{max-width:760px;margin:0 auto 60px;text-align:center;}
+.dir-headline{
+  font-size:clamp(32px,4.5vw,56px);font-weight:700;
+  letter-spacing:-0.4px;line-height:1.1;color:var(--dark);
+  margin-bottom:18px;
+}
+.dir-headline em{font-style:normal;color:var(--teal);}
+.dir-sub{font-size:17px;color:var(--gray);line-height:1.65;max-width:580px;margin:0 auto 36px;}
+
+/* Filter tabs */
+.dir-filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;}
+.dir-filter{
+  padding:9px 20px;border-radius:980px;
+  font-size:13px;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--border);color:var(--gray);
+  background:white;transition:all .2s;
+}
+.dir-filter.active,
+.dir-filter:hover{background:var(--teal);color:white;border-color:var(--teal);}
+
+/* Stats bar */
+.dir-stats-bar{
+  display:flex;gap:0;justify-content:center;flex-wrap:wrap;
+  background:white;border:1px solid var(--border);border-radius:20px;
+  max-width:640px;margin:0 auto 56px;overflow:hidden;
+}
+.dir-stat{
+  flex:1;min-width:120px;padding:18px 24px;text-align:center;
+  border-right:1px solid var(--border);
+}
+.dir-stat:last-child{border-right:none;}
+.dir-stat-n{font-size:24px;font-weight:800;color:var(--dark);letter-spacing:-0.5px;}
+.dir-stat-l{font-size:11px;font-weight:600;color:var(--gray-l);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px;}
+
+/* Driver card grid */
+.driver-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;max-width:1100px;margin:0 auto 60px;
+}
+.dcard{
+  background:white;border:1.5px solid var(--border);border-radius:24px;
+  padding:24px;transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;
+  position:relative;overflow:hidden;
+}
+.dcard:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(11,110,122,0.1);border-color:rgba(11,110,122,0.2);}
+.dcard-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
+.dcard-avatar{
+  width:58px;height:58px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;flex-shrink:0;position:relative;
+}
+.dcard-status{
+  position:absolute;bottom:-3px;right:-3px;
+  width:14px;height:14px;border-radius:50%;
+  border:2.5px solid white;
+}
+.dcard-status.online{background:#22C55E;}
+.dcard-status.busy{background:#F59E0B;}
+.dcard-info{flex:1;min-width:0;}
+.dcard-name{font-size:17px;font-weight:800;color:var(--dark);margin-bottom:2px;}
+.dcard-vehicle{font-size:12px;color:var(--gray-l);margin-bottom:8px;}
+.dcard-rating{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--dark);}
+.dcard-rating span{font-size:11px;font-weight:500;color:var(--gray-l);}
+.dcard-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 11px;border-radius:980px;font-size:11px;font-weight:700;
+}
+.badge-teal{background:rgba(11,110,122,0.09);color:var(--teal);}
+.badge-gold{background:rgba(196,146,42,0.10);color:var(--gold);}
+.badge-green{background:rgba(26,158,106,0.09);color:var(--green);}
+.badge-gray{background:var(--surface2);color:var(--gray);}
+.dcard-divider{height:1px;background:var(--border);margin-bottom:14px;}
+.dcard-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px;color:var(--gray);}
+.dcard-row:last-of-type{margin-bottom:0;}
+.dcard-row strong{color:var(--dark);font-weight:700;}
+.dcard-footer{display:flex;gap:8px;margin-top:16px;}
+.dcard-btn{
+  flex:1;padding:10px;border-radius:12px;
+  font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;
+  border:1.5px solid var(--border);color:var(--dark);background:white;
+}
+.dcard-btn:hover{background:var(--surface);border-color:var(--teal);color:var(--teal);}
+.dcard-btn.primary{
+  background:var(--teal);color:white;border-color:var(--teal);
+}
+.dcard-btn.primary:hover{background:var(--teal-d);}
+/* available ribbon */
+.dcard-ribbon{
+  position:absolute;top:18px;right:18px;
+  font-size:10px;font-weight:700;padding:4px 10px;border-radius:980px;letter-spacing:.5px;
+}
+.ribbon-avail{background:#DCFCE7;color:#166534;}
+.ribbon-busy{background:#FEF9C3;color:#854D0E;}
+/* featured card highlight */
+.dcard.featured{border-color:rgba(11,110,122,0.35);background:linear-gradient(135deg,rgba(11,110,122,0.03),white);}
+
+/* Directory CTA row */
+.dir-cta-row{text-align:center;}
+.dir-cta-note{font-size:14px;color:var(--gray-l);margin-top:14px;}
+.dir-cta-note a{color:var(--teal);font-weight:600;}
+
+/* ══════════════════════════════════════
+   CTA FINAL
+══════════════════════════════════════ */
+#cta{background:var(--dark);padding:120px max(24px,8vw);text-align:center;}
+.cta-headline{font-family:'DM Sans',sans-serif;font-size:clamp(32px,5vw,72px);font-weight:700;line-height:1.1;letter-spacing:-0.5px;color:white;margin-bottom:24px;}
+.cta-headline em{font-style:normal;color:var(--teal-l);}
+.cta-sub{font-size:19px;font-weight:400;color:rgba(255,255,255,0.4);margin-bottom:56px;line-height:1.6;}
+.cta-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:900px;margin:0 auto;}
+.cta-card{
+  border-radius:24px;padding:36px 32px;text-align:left;
+  border:1.5px solid rgba(255,255,255,0.08);
+  transition:border-color 0.3s,transform 0.3s;
+  position:relative;overflow:hidden;
+}
+.cta-card:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-4px);}
+.cta-card-1{background:linear-gradient(135deg,rgba(11,110,122,0.2),rgba(11,110,122,0.05));}
+.cta-card-2{background:linear-gradient(135deg,rgba(196,146,42,0.15),rgba(196,146,42,0.03));}
+.cta-card-3{background:linear-gradient(135deg,rgba(26,158,106,0.15),rgba(26,158,106,0.03));}
+.cta-card-emoji{font-size:36px;margin-bottom:18px;}
+.cta-card-title{font-size:22px;font-weight:800;color:white;margin-bottom:8px;letter-spacing:-0.5px;}
+.cta-card-text{font-size:14px;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:24px;}
+.cta-card-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:white;color:var(--dark);
+  font-size:13px;font-weight:700;padding:11px 22px;
+  border-radius:980px;transition:all 0.2s;
+}
+.cta-card-btn:hover{background:rgba(255,255,255,0.88);}
+.cta-card-btn.teal{background:var(--teal);color:white;}
+.cta-card-btn.teal:hover{background:var(--teal-l);}
+.cta-card-btn.gold{background:var(--gold);color:white;}
+.cta-card-btn.gold:hover{background:var(--gold-l);}
+
+/* ══════════════════════════════════════
+   CONTACT SECTION
+══════════════════════════════════════ */
+#contacto{background:var(--surface);padding:120px max(24px,8vw);}
+.contact-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;
+  max-width:1000px;margin:0 auto;align-items:start;
+}
+@media(max-width:820px){.contact-wrap{grid-template-columns:1fr;gap:48px;}}
+.contact-copy{}
+.contact-tag{display:inline-block;background:rgba(11,110,122,0.1);border:1px solid rgba(11,110,122,0.2);border-radius:980px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
+.contact-headline{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-0.4px;line-height:1.15;color:var(--dark);margin-bottom:16px;}
+.contact-headline em{font-style:normal;color:var(--teal);}
+.contact-sub{font-size:16px;color:var(--gray);line-height:1.65;margin-bottom:36px;}
+.contact-info{display:flex;flex-direction:column;gap:14px;}
+.contact-info-item{display:flex;align-items:center;gap:12px;font-size:15px;color:var(--dark);}
+.contact-info-icon{width:40px;height:40px;border-radius:12px;background:rgba(11,110,122,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.contact-info-label{font-size:11px;font-weight:700;color:var(--gray-l);text-transform:uppercase;letter-spacing:1px;}
+.contact-info-val{font-weight:600;color:var(--dark);}
+
+/* Form */
+.contact-form-wrap{
+  background:white;border:1.5px solid var(--border);border-radius:28px;
+  padding:36px;box-shadow:0 8px 40px rgba(11,110,122,0.06);
+}
+.cf-label{font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block;}
+.cf-input,.cf-textarea{
+  width:100%;padding:13px 16px;border:1.5px solid var(--border);
+  border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;
+  color:var(--dark);background:var(--surface);outline:none;
+  transition:border-color .2s,box-shadow .2s;margin-bottom:18px;
+}
+.cf-input:focus,.cf-textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(11,110,122,0.1);background:white;}
+.cf-textarea{resize:vertical;min-height:120px;line-height:1.5;}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:500px){.cf-row{grid-template-columns:1fr;}}
+.cf-submit{
+  width:100%;padding:15px;background:var(--teal);color:white;
+  border:none;border-radius:14px;font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:background .2s,transform .15s;
+}
+.cf-submit:hover{background:var(--teal-d);transform:translateY(-1px);}
+.cf-submit:active{transform:translateY(0);}
+.cf-success{
+  display:none;text-align:center;padding:32px 16px;
+}
+.cf-success-icon{font-size:48px;margin-bottom:12px;}
+.cf-success-title{font-size:20px;font-weight:800;color:var(--dark);margin-bottom:8px;}
+.cf-success-sub{font-size:14px;color:var(--gray);line-height:1.6;}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer{background:var(--dark2);padding:56px max(24px,8vw) 40px;border-top:1px solid rgba(255,255,255,0.06);}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:40px;margin-bottom:48px;}
+.footer-brand{max-width:300px;}
+.footer-logo{display:flex;align-items:center;margin-bottom:14px;}
+.footer-desc{font-size:14px;color:rgba(255,255,255,0.35);line-height:1.65;}
+.footer-links{display:flex;gap:64px;flex-wrap:wrap;}
+.footer-col-title{font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+.footer-col a{display:block;font-size:14px;color:rgba(255,255,255,0.35);margin-bottom:10px;transition:color 0.2s;}
+.footer-col a:hover{color:white;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);}
+.footer-copy{font-size:13px;color:rgba(255,255,255,0.25);}
+.footer-cert{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.25);}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:900px){
+  .feature-split{grid-template-columns:1fr;gap:48px;}
+  .feature-split.reverse{direction:ltr;}
+  .phone-mockup{width:260px;height:540px;}
+  .nav-links{display:none;}
+  .nav-hamburger{display:flex;}
+}
+@media(max-width:640px){
+  .transparency-headline{letter-spacing:-1px;}
+  .cta-headline{letter-spacing:-1.5px;}
+  .hero-headline{letter-spacing:-1px;}
+  .stats-headline{letter-spacing:-0.5px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .stat-cell{padding:28px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════ -->
+<nav id="main-nav" class="dark">
+  <a href="#hero" class="nav-logo">
+    <img src="logo.png" alt="Ka'an Move">
+  </a>
+  <div class="nav-links">
+    <a href="#pasajero">Pasajeros</a>
+    <a href="#conductor">Conductores</a>
+    <a href="#socio">Socios</a>
+    <a href="#demo">Demo</a>
+    <a href="#tarifario">Tarifario</a>
+  </div>
+  <a href="#cta" class="nav-cta">Unirse →</a>
+  <div class="nav-hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <img src="logo.png" alt="Ka'an Move"
+    style="height:clamp(90px,14vw,140px);width:auto;margin-bottom:32px;
+           filter:drop-shadow(0 8px 32px rgba(0,0,0,0.35));
+           animation:fadeUp 0.7s 0.05s both;">
+
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Movilidad certificada · Cancún, Q. Roo
+  </div>
+
+  <h1 class="hero-headline">
+    Movilidad<br>con <em>propósito.</em>
+  </h1>
+
+  <p class="hero-sub">
+    La plataforma de transporte que pone a conductores, pasajeros y socios en el mismo lado. Sin letra chica, sin sorpresas.
+  </p>
+
+  <div class="hero-btns">
+    <a href="#demo" class="btn-hero-primary">Ver demo interactiva</a>
+    <a href="#conductor" class="btn-hero-secondary">Soy conductor</a>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <span>Descubrir</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     MARQUEE
+══════════════════════════════════════ -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <span class="marquee-item"><div class="marquee-dot"></div>Tarifario Público</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Conductor Certificado</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Ingresos Transparentes</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Rastreo en Tiempo Real</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Sin Costos Ocultos</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Reserva Anticipada</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Operación Regulada</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Soporte 24/7</span>
+    <!-- duplicate for infinite loop -->
+    <span class="marquee-item"><div class="marquee-dot"></div>Tarifario Público</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Conductor Certificado</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Ingresos Transparentes</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Rastreo en Tiempo Real</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Sin Costos Ocultos</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Reserva Anticipada</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Operación Regulada</span>
+    <span class="marquee-item"><div class="marquee-dot"></div>Soporte 24/7</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STATS
+══════════════════════════════════════ -->
+<section id="stats">
+  <p class="stats-eyebrow reveal">Cancún · Q. Roo · Contexto del sector</p>
+  <h2 class="stats-headline reveal delay-1">
+    El transporte tradicional<br>enfrenta una <em>crisis estructural.</em>
+  </h2>
+  <p class="stats-intro reveal delay-2">
+    <strong>Uber entró a Cancún en diciembre de 2023.</strong> Las tarifas de taxi no se han actualizado en 8 años. El sector necesita una transformación urgente — y Ka'an Move llegó para construirla.
+  </p>
+
+  <!-- Crisis stat bar -->
+  <div class="crisis-bar reveal">
+    <div class="crisis-stat">
+      <div class="crisis-stat-n red">8</div>
+      <div class="crisis-stat-l">años sin actualización de tarifas en el sector</div>
+    </div>
+    <div class="crisis-stat">
+      <div class="crisis-stat-n red">0</div>
+      <div class="crisis-stat-l">plataformas locales con historial verificable de conductores</div>
+    </div>
+    <div class="crisis-stat">
+      <div class="crisis-stat-n red">Dic 23</div>
+      <div class="crisis-stat-l">entrada de Uber a Cancún — presión directa al sector formal</div>
+    </div>
+    <div class="crisis-stat">
+      <div class="crisis-stat-n red">0%</div>
+      <div class="crisis-stat-l">de socios con visibilidad operativa en tiempo real</div>
+    </div>
+  </div>
+
+  <!-- Problem cards -->
+  <div class="crisis-grid">
+    <div class="crisis-card reveal">
+      <div class="crisis-top">
+        <div class="crisis-icon">📡</div>
+        <span class="crisis-badge badge-orange">Gestión ciega</span>
+      </div>
+      <div class="crisis-title">Sin visibilidad operativa</div>
+      <div class="crisis-text">Los socios no saben dónde están sus unidades, cómo maneja su conductor ni qué ocurre durante el servicio. Decisiones tomadas en el vacío.</div>
+    </div>
+    <div class="crisis-card reveal delay-1">
+      <div class="crisis-top">
+        <div class="crisis-icon">📋</div>
+        <span class="crisis-badge badge-red">Pérdida de talento</span>
+      </div>
+      <div class="crisis-title">Sin historial verificable</div>
+      <div class="crisis-text">El conductor no tiene forma de demostrar su experiencia. Cada empleador empieza desde cero. No hay datos objetivos — solo reputación verbal.</div>
+    </div>
+    <div class="crisis-card reveal delay-2">
+      <div class="crisis-top">
+        <div class="crisis-icon">⚠️</div>
+        <span class="crisis-badge badge-yellow">Exposición legal</span>
+      </div>
+      <div class="crisis-title">Riesgo legal y reputacional</div>
+      <div class="crisis-text">Un accidente, una queja o un incidente sin evidencia puede costarle la operación completa al socio. Sin cámaras, sin registros, sin respaldo.</div>
+    </div>
+    <div class="crisis-card reveal delay-3">
+      <div class="crisis-top">
+        <div class="crisis-icon">🎓</div>
+        <span class="crisis-badge badge-purple">Brecha competitiva</span>
+      </div>
+      <div class="crisis-title">Cero profesionalización</div>
+      <div class="crisis-text">El sector no ofrece formación estructurada. Sin certificaciones, los conductores no pueden diferenciarse ni competir frente a plataformas digitales.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PILLARS
+══════════════════════════════════════ -->
+<section id="pillars">
+  <div class="section-tag reveal">¿Por qué Ka'an Move?</div>
+  <h2 class="pillars-headline reveal delay-1">
+    Tres valores.<br>Un solo propósito.
+  </h2>
+  <div class="pillars-grid">
+    <div class="pillar-card reveal">
+      <div class="pillar-icon">🔍</div>
+      <div class="pillar-title">Transparencia total</div>
+      <div class="pillar-text">El precio de cada viaje se calcula y muestra antes de confirmar. El conductor ve su ganancia exacta. El pasajero ve el desglose completo. Sin cargos de última hora, sin sorpresas.</div>
+    </div>
+    <div class="pillar-card reveal delay-1">
+      <div class="pillar-icon">👆</div>
+      <div class="pillar-title">Elección verdadera</div>
+      <div class="pillar-text">En Ka'an Move el pasajero elige a su conductor por nombre, historial y calificación. No un algoritmo anónimo — una decisión informada. Los conductores también pueden declinar viajes que no les convengan.</div>
+    </div>
+    <div class="pillar-card reveal delay-2">
+      <div class="pillar-icon">✓</div>
+      <div class="pillar-title">Conductores certificados</div>
+      <div class="pillar-text">Cada conductor pasa por un proceso de verificación, cursos de seguridad vial y atención al cliente. Ka'an Move establece un estándar de calidad claro: no cualquiera conduce con nosotros.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PASAJERO
+══════════════════════════════════════ -->
+<section id="pasajero">
+  <div class="feature-split">
+    <div class="feature-copy">
+      <div class="feature-tag reveal">Para Pasajeros</div>
+      <h2 class="feature-headline reveal delay-1">
+        Elige con quién viajas.
+      </h2>
+      <p class="feature-text reveal delay-2">
+        En Ka'an Move la elección es tuya desde el inicio. Revisa el perfil del conductor, sus comentarios reales, su certificación y su tiempo de llegada — todo antes de confirmar. Sin algoritmos opacos, sin asignaciones forzadas.
+      </p>
+      <div class="feature-items">
+        <div class="feature-item reveal delay-1">
+          <div class="fi-icon">👆</div>
+          <div class="fi-body">
+            <div class="fi-title">Elección Personalizada</div>
+            <div class="fi-desc">Selecciona a tu conductor por nombre, historial y especialidad.</div>
+          </div>
+        </div>
+        <div class="feature-item reveal delay-2">
+          <div class="fi-icon">📅</div>
+          <div class="fi-body">
+            <div class="fi-title">Reserva Anticipada</div>
+            <div class="fi-desc">Programa tu viaje con 2 a 24 horas de anticipación. Ideal para aeropuerto y hoteles.</div>
+          </div>
+        </div>
+        <div class="feature-item reveal delay-3">
+          <div class="fi-icon">🗺️</div>
+          <div class="fi-body">
+            <div class="fi-title">Rastreo en tiempo real</div>
+            <div class="fi-desc">Sigue la ruta de tu conductor en mapa real desde que acepta hasta que llegas.</div>
+          </div>
+        </div>
+        <div class="feature-item reveal delay-4">
+          <div class="fi-icon green">💬</div>
+          <div class="fi-body">
+            <div class="fi-title">Contacto directo</div>
+            <div class="fi-desc">Al confirmar, desbloqueas el número y WhatsApp de tu conductor directamente.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-visual reveal delay-2">
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-screen-hero" style="background:linear-gradient(160deg,#1A5C3A,#1A9E6A);">
+            <div style="font-size:10px;opacity:.65;margin-bottom:3px;">¡Hola, Ana! 👋</div>
+            <div style="font-size:16px;font-weight:800;margin-bottom:2px;">¿A dónde vas?</div>
+            <div style="font-size:10px;opacity:.55;">3 conductores certificados cerca</div>
+            <div style="margin-top:12px;background:rgba(255,255,255,0.15);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:7px;">
+              <span style="font-size:13px;">📍</span>
+              <span style="color:rgba(255,255,255,.8);font-size:11px;font-weight:600;">¿A dónde deseas ir?</span>
+            </div>
+          </div>
+          <div style="padding:10px 12px 0;">
+            <div style="font-size:8px;font-weight:700;color:#94A3B3;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Selecciona tu conductor</div>
+            <div style="background:white;border:1.5px solid #0B6E7A;border-radius:14px;padding:10px;margin-bottom:7px;display:flex;align-items:center;gap:8px;">
+              <div style="width:36px;height:36px;background:#E6F4F6;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;flex-shrink:0;">👨<div style="position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;background:#0B6E7A;border-radius:50%;border:1.5px solid white;display:flex;align-items:center;justify-content:center;font-size:6px;color:white;font-weight:800;">✓</div></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:11px;font-weight:800;color:#0C1E28;">Carlos Méndez</div>
+                <div style="font-size:9px;color:#94A3B3;">ECO-110 · Toyota Corolla</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:12px;font-weight:800;color:#0B6E7A;">3 min</div>
+                <div style="font-size:9px;color:#94A3B3;">⭐ 4.9</div>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid #DDE5EC;border-radius:14px;padding:10px;margin-bottom:7px;display:flex;align-items:center;gap:8px;opacity:.75;">
+              <div style="width:36px;height:36px;background:#FDF6E8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👨</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:11px;font-weight:800;color:#0C1E28;">Miguel Torres</div>
+                <div style="font-size:9px;color:#94A3B3;">ECO-111 · Nissan Versa</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:12px;font-weight:800;color:#94A3B3;">5 min</div>
+                <div style="font-size:9px;color:#94A3B3;">⭐ 4.5</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:8px 12px;margin-top:auto;">
+            <div style="background:linear-gradient(135deg,#0B6E7A,#12909F);border-radius:12px;padding:11px;text-align:center;color:white;font-size:12px;font-weight:700;">Confirmar con Carlos →</div>
+          </div>
+        </div>
+      </div>
+      <div class="float-badge" style="top:15%;right:-24px;color:#1A9E6A;border:1px solid rgba(26,158,106,0.2);animation:float 4s ease-in-out infinite;">
+        <div style="font-size:10px;color:#94A3B3;margin-bottom:2px;">Conductor cerca</div>
+        <div>🚕 <strong>3 min</strong> de distancia</div>
+      </div>
+      <div class="float-badge" style="bottom:18%;left:-28px;color:#0B6E7A;border:1px solid rgba(11,110,122,0.2);animation:float 5s ease-in-out infinite 1s;">
+        <div style="font-size:10px;color:#94A3B3;margin-bottom:2px;">Calificación verificada</div>
+        <div>⭐ <strong>4.9</strong> · 1,248 viajes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CONDUCTOR — TRANSPARENCY
+══════════════════════════════════════ -->
+<section id="conductor">
+  <div class="transparency-badge">
+    <span>✓</span> Para Conductores
+  </div>
+  <h2 class="transparency-headline reveal">
+    Tus ingresos,<br><em>completos y claros.</em>
+  </h2>
+  <p class="transparency-sub reveal delay-1">
+    Antes de aceptar cada viaje ves exactamente lo que ganarás. No hay descuentos después, no hay cargos sorpresa. Lo que acuerdas es lo que recibes — garantizado.
+  </p>
+
+  <div class="transparency-cards">
+    <div class="t-card reveal">
+      <div class="t-card-icon">💵</div>
+      <div class="t-card-title">Ganancia visible antes de aceptar</div>
+      <div class="t-card-text">Cada solicitud muestra tu monto de pago exacto antes de que decidas aceptar o declinar. Tú mandas.</div>
+    </div>
+    <div class="t-card reveal delay-1">
+      <div class="t-card-icon">📋</div>
+      <div class="t-card-title">Tarifario público desde el día uno</div>
+      <div class="t-card-text">Las tarifas base, recargos nocturnos y zonas especiales son públicas. Nada cambia sin que te avisemos con tiempo.</div>
+    </div>
+    <div class="t-card reveal delay-2">
+      <div class="t-card-icon">🎓</div>
+      <div class="t-card-title">Driver Hub profesional</div>
+      <div class="t-card-text">Accede a capacitaciones, seguimiento de documentos y tu historial de ganancias desde la misma app. Tu carrera, en orden.</div>
+    </div>
+    <div class="t-card reveal delay-3">
+      <div class="t-card-icon">🛡️</div>
+      <div class="t-card-title">Operación respaldada</div>
+      <div class="t-card-text">Trabajamos con organismos de transporte reconocidos en Cancún. Tu actividad como conductor está siempre dentro del marco regulatorio vigente.</div>
+    </div>
+  </div>
+
+  <div class="earning-calc reveal">
+    <div class="calc-title">Así funciona tu pago</div>
+    <div class="calc-row">
+      <div class="calc-label">Antes de aceptar cada viaje</div>
+      <div class="calc-val" style="color:#34D399;">Ves tu ganancia exacta</div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-label">Al completar el traslado</div>
+      <div class="calc-val" style="color:#34D399;">Se acredita de inmediato</div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-label">Variaciones de zona u horario</div>
+      <div class="calc-val" style="color:#34D399;">Reflejadas antes de confirmar</div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-label" style="font-size:17px;font-weight:700;color:white;">Sin cargos posteriores al acuerdo</div>
+      <div class="calc-val big" style="font-size:24px;">Siempre</div>
+    </div>
+    <div class="calc-note">
+      <strong>Tarifario accesible.</strong> El cálculo de cada viaje usa parámetros públicos. Tú los ves completos antes de decidir — no después. Los costos operativos de la plataforma se informan desde el registro y no cambian sin previo aviso.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     DIRECTORIO DE CONDUCTORES
+══════════════════════════════════════ -->
+<section id="directorio">
+  <div class="dir-header">
+    <div class="section-tag reveal">Directorio de Conductores</div>
+    <h2 class="dir-headline reveal delay-1">Conoce a quién<br>te va a llevar. <em>Antes.</em></h2>
+    <p class="dir-sub reveal delay-2">Cada conductor en Ka'an Move es verificado, certificado y calificado por pasajeros reales. Aquí puedes explorar perfiles completos antes de reservar.</p>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="dir-stats-bar reveal">
+    <div class="dir-stat"><div class="dir-stat-n">48</div><div class="dir-stat-l">Conductores activos</div></div>
+    <div class="dir-stat"><div class="dir-stat-n">4.8⭐</div><div class="dir-stat-l">Rating promedio</div></div>
+    <div class="dir-stat"><div class="dir-stat-n">100%</div><div class="dir-stat-l">Verificados</div></div>
+    <div class="dir-stat"><div class="dir-stat-n">0</div><div class="dir-stat-l">Costos ocultos</div></div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="dir-filters reveal delay-1">
+    <button class="dir-filter active" onclick="filterDir(this,'todos')">Todos</button>
+    <button class="dir-filter" onclick="filterDir(this,'hotelera')">Zona Hotelera</button>
+    <button class="dir-filter" onclick="filterDir(this,'aeropuerto')">Aeropuerto</button>
+    <button class="dir-filter" onclick="filterDir(this,'centro')">Centro</button>
+    <button class="dir-filter" onclick="filterDir(this,'premium')">Premium</button>
+  </div>
+
+  <!-- Driver cards -->
+  <div class="driver-grid" id="driver-grid">
+
+    <!-- 1 — Carlos Méndez -->
+    <div class="dcard featured reveal" data-zone="hotelera">
+      <div class="dcard-ribbon ribbon-avail">● Disponible</div>
+      <div class="dcard-top">
+        <div class="dcard-avatar" style="background:linear-gradient(135deg,#E6F4F6,#BDE8ED);">
+          👨
+          <div class="dcard-status online"></div>
+        </div>
+        <div class="dcard-info">
+          <div class="dcard-name">Carlos Méndez</div>
+          <div class="dcard-vehicle">ECO-110 · Toyota Corolla 2022</div>
+          <div class="dcard-rating">⭐ 4.9 <span>· 1,248 viajes</span></div>
+        </div>
+      </div>
+      <div class="dcard-badges">
+        <span class="badge badge-teal">✓ Cert. F4</span>
+        <span class="badge badge-teal">🏨 Zona Hotelera</span>
+        <span class="badge badge-green">🌟 Top Conductor</span>
+      </div>
+      <div class="dcard-divider"></div>
+      <div class="dcard-row"><span>🚗 Vehículo</span><strong>Toyota Corolla Blanco</strong></div>
+      <div class="dcard-row"><span>📍 Zona habitual</span><strong>Kukulcán · Hoteles</strong></div>
+      <div class="dcard-row"><span>🗣️ Idiomas</span><strong>Español · Inglés</strong></div>
+      <div class="dcard-row"><span>📅 Con Ka'an Move</span><strong>desde enero 2025</strong></div>
+      <div class="dcard-footer">
+        <button class="dcard-btn">📞 Contactar</button>
+        <button class="dcard-btn primary">Reservar</button>
+      </div>
+    </div>
+
+    <!-- 2 — Roberto Díaz -->
+    <div class="dcard reveal delay-1" data-zone="aeropuerto">
+      <div class="dcard-ribbon ribbon-avail">● Disponible</div>
+      <div class="dcard-top">
+        <div class="dcard-avatar" style="background:linear-gradient(135deg,#FDF6E8,#FAEACC);">
+          👨‍✈️
+          <div class="dcard-status online"></div>
+        </div>
+        <div class="dcard-info">
+          <div class="dcard-name">Roberto Díaz</div>
+          <div class="dcard-vehicle">ECO-094 · Honda City 2021</div>
+          <div class="dcard-rating">⭐ 4.8 <span>· 2,107 viajes</span></div>
+        </div>
+      </div>
+      <div class="dcard-badges">
+        <span class="badge badge-teal">✓ Cert. F4</span>
+        <span class="badge badge-gold">✈️ Especialista Aeropuerto</span>
+      </div>
+      <div class="dcard-divider"></div>
+      <div class="dcard-row"><span>🚗 Vehículo</span><strong>Honda City Gris</strong></div>
+      <div class="dcard-row"><span>📍 Zona habitual</span><strong>Aeropuerto CUN</strong></div>
+      <div class="dcard-row"><span>🗣️ Idiomas</span><strong>Español · Inglés · Francés</strong></div>
+      <div class="dcard-row"><span>📅 Con Ka'an Move</span><strong>desde marzo 2024</strong></div>
+      <div class="dcard-footer">
+        <button class="dcard-btn">📞 Contactar</button>
+        <button class="dcard-btn primary">Reservar</button>
+      </div>
+    </div>
+
+    <!-- 3 — Marco Ávila -->
+    <div class="dcard reveal delay-2" data-zone="premium centro">
+      <div class="dcard-ribbon ribbon-avail">● Disponible</div>
+      <div class="dcard-top">
+        <div class="dcard-avatar" style="background:linear-gradient(135deg,#E8F0FC,#C5D8F8);">
+          🧑
+          <div class="dcard-status online"></div>
+        </div>
+        <div class="dcard-info">
+          <div class="dcard-name">Marco Ávila</div>
+          <div class="dcard-vehicle">ECO-118 · Toyota Yaris 2023</div>
+          <div class="dcard-rating">⭐ 4.9 <span>· 3,214 viajes</span></div>
+        </div>
+      </div>
+      <div class="dcard-badges">
+        <span class="badge badge-teal">✓ Cert. F4</span>
+        <span class="badge badge-green">💎 Premium</span>
+        <span class="badge badge-gray">🏛️ Centro</span>
+      </div>
+      <div class="dcard-divider"></div>
+      <div class="dcard-row"><span>🚗 Vehículo</span><strong>Toyota Yaris Rojo</strong></div>
+      <div class="dcard-row"><span>📍 Zona habitual</span><strong>Centro · SM 21 · Av. Uxmal</strong></div>
+      <div class="dcard-row"><span>🗣️ Idiomas</span><strong>Español</strong></div>
+      <div class="dcard-row"><span>📅 Con Ka'an Move</span><strong>desde noviembre 2023</strong></div>
+      <div class="dcard-footer">
+        <button class="dcard-btn">📞 Contactar</button>
+        <button class="dcard-btn primary">Reservar</button>
+      </div>
+    </div>
+
+    <!-- 4 — Miguel Torres -->
+    <div class="dcard reveal" data-zone="centro">
+      <div class="dcard-ribbon ribbon-busy">● En servicio</div>
+      <div class="dcard-top">
+        <div class="dcard-avatar" style="background:linear-gradient(135deg,#F0ECFA,#DDD1F5);">
+          👦
+          <div class="dcard-status busy"></div>
+        </div>
+        <div class="dcard-info">
+          <div class="dcard-name">Miguel Torres</div>
+          <div class="dcard-vehicle">ECO-111 · Nissan Versa 2023</div>
+          <div class="dcard-rating">⭐ 4.5 <span>· 892 viajes</span></div>
+        </div>
+      </div>
+      <div class="dcard-badges">
+        <span class="badge badge-teal">✓ Cert. F3</span>
+        <span class="badge badge-gray">🏛️ Centro</span>
+      </div>
+      <div class="dcard-divider"></div>
+      <div class="dcard-row"><span>🚗 Vehículo</span><strong>Nissan Versa Blanco</strong></div>
+      <div class="dcard-row"><span>📍 Zona habitual</span><strong>Centro · Mercados</strong></div>
+      <div class="dcard-row"><span>🗣️ Idiomas</span><strong>Español</strong></div>
+      <div class="dcard-row"><span>📅 Con Ka'an Move</span><strong>desde junio 2025</strong></div>
+      <div class="dcard-footer">
+        <button class="dcard-btn">📞 Contactar</button>
+        <button class="dcard-btn" style="opacity:.5;cursor:default;">En servicio</button>
+      </div>
+    </div>
+
+    <!-- 5 — Luis Herrera -->
+    <div class="dcard reveal delay-1" data-zone="hotelera premium">
+      <div class="dcard-ribbon ribbon-avail">● Disponible</div>
+      <div class="dcard-top">
+        <div class="dcard-avatar" style="background:linear-gradient(135deg,#E6F7EE,#BBEED6);">
+          🧔
+          <div class="dcard-status online"></div>
+        </div>
+        <div class="dcard-info">
+          <div class="dcard-name">Luis Herrera</div>
+          <div class="dcard-vehicle">ECO-203 · Volkswagen Jetta 2022</div>
+          <div class="dcard-rating">⭐ 4.7 <span>· 1,563 viajes</span></div>
+        </div>
+      </div>
+      <div class="dcard-badges">
+        <span class="badge badge-teal">✓ Cert. F3</span>
+        <span class="badge badge-green">💎 Premium</span>
+        <span class="badge badge-teal">🏨 Zona Hotelera</span>
+      </div>
+      <div class="dcard-divider"></div>
+      <div class="dcard-row"><span>🚗 Vehículo</span><strong>VW Jetta Negro</strong></div>
+      <div class="dcard-row"><span>📍 Zona habitual</span><strong>Zona Hotelera · km 8–16</strong></div>
+      <div class="dcard-row"><span>🗣️ Idiomas</span><strong>Español · Inglés</strong></div>
+      <div class="dcard-row"><span>📅 Con Ka'an Move</span><strong>desde septiembre 2024</strong></div>
+      <div class="dcard-footer">
+        <button class="dcard-btn">📞 Contactar</button>
+        <button class="dcard-btn primary">Reservar</button>
+      </div>
+    </div>
+
+    <!-- 6 — Ana Ruiz -->
+    <div class="dcard reveal delay-2" data-zone="aeropuerto hotelera">
+      <div class="dcard-ribbon ribbon-avail">● Disponible</div>
+      <div class="dcard-top">
+        <div class="dcard-avatar" style="background:linear-gradient(135deg,#FDE8F0,#F8C5D8);">
+          👩
+          <div class="dcard-status online"></div>
+        </div>
+        <div class="dcard-info">
+          <div class="dcard-name">Ana Ruiz</div>
+          <div class="dcard-vehicle">ECO-077 · Kia Rio 2023</div>
+          <div class="dcard-rating">⭐ 4.9 <span>· 1,875 viajes</span></div>
+        </div>
+      </div>
+      <div class="dcard-badges">
+        <span class="badge badge-teal">✓ Cert. F4</span>
+        <span class="badge badge-gold">✈️ Especialista Aeropuerto</span>
+        <span class="badge badge-green">🌟 Top Conductora</span>
+      </div>
+      <div class="dcard-divider"></div>
+      <div class="dcard-row"><span>🚗 Vehículo</span><strong>Kia Rio Azul</strong></div>
+      <div class="dcard-row"><span>📍 Zona habitual</span><strong>Aeropuerto · Zona Hotelera</strong></div>
+      <div class="dcard-row"><span>🗣️ Idiomas</span><strong>Español · Inglés</strong></div>
+      <div class="dcard-row"><span>📅 Con Ka'an Move</span><strong>desde febrero 2024</strong></div>
+      <div class="dcard-footer">
+        <button class="dcard-btn">📞 Contactar</button>
+        <button class="dcard-btn primary">Reservar</button>
+      </div>
+    </div>
+
+  </div><!-- /driver-grid -->
+
+  <div class="dir-cta-row reveal">
+    <a href="#demo" class="btn-hero-primary" style="display:inline-block;">Ver directorio completo</a>
+    <div class="dir-cta-note">¿Quieres unirte? <a href="#cta">Regístrate como conductor →</a></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SOCIO / B2B
+══════════════════════════════════════ -->
+<section id="socio">
+  <div class="feature-tag feature-tag-gold reveal">Para Socios · B2B</div>
+  <h2 class="feature-headline reveal delay-1" style="max-width:600px;">
+    Administra tu flota como un negocio real.
+  </h2>
+  <p class="feature-text reveal delay-2" style="max-width:560px;">
+    Si eres propietario de unidades, Ka'an Move te da un dashboard en tiempo real con ingresos, puntualidad, alertas de documentos y reportes mensuales listos para presentar.
+  </p>
+  <div class="socio-grid">
+    <div class="socio-feature reveal">
+      <div class="sf-icon">🗺️</div>
+      <div class="sf-title">Flota en vivo</div>
+      <div class="sf-text">Mapa en tiempo real con la posición de cada unidad, estado del servicio y zona de operación.</div>
+    </div>
+    <div class="socio-feature reveal delay-1">
+      <div class="sf-icon">📊</div>
+      <div class="sf-title">Inteligencia financiera</div>
+      <div class="sf-text">Ingresos diarios, semanales y mensuales por unidad. Gráficas de puntualidad y meta de mes con un vistazo.</div>
+    </div>
+    <div class="socio-feature reveal delay-2">
+      <div class="sf-icon">🔔</div>
+      <div class="sf-title">Alertas automatizadas</div>
+      <div class="sf-text">Vencimiento de documentos, nueva calificación de conductor, incidencias reportadas — todo en tiempo real.</div>
+    </div>
+    <div class="socio-feature reveal delay-3">
+      <div class="sf-icon">📋</div>
+      <div class="sf-title">Auditoría mensual</div>
+      <div class="sf-text">Reporte listo al final de cada mes: total de servicios, ingresos brutos, rating promedio de tu flota.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     DEMO INTERACTIVA (v2 embebida)
+══════════════════════════════════════ -->
+<section id="demo">
+  <div class="demo-header">
+    <div class="demo-tag reveal">
+      <div class="hero-badge-dot" style="background:#34D399;"></div>
+      Prototipo interactivo
+    </div>
+    <h2 class="demo-headline reveal delay-1">
+      Pruébalo tú mismo.
+    </h2>
+    <p class="demo-sub reveal delay-2">
+      El mismo flujo que vivirán pasajeros y conductores, en tiempo real. Elige un destino y observa cómo la plataforma sincroniza ambas vistas automáticamente.
+    </p>
+  </div>
+  <div class="demo-iframe-wrap">
+    <iframe
+      src="KaanMove_Demo_Exposicion_v2.html"
+      title="Ka'an Move — Demo Interactiva v2"
+      loading="lazy"
+      allowfullscreen
+    ></iframe>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CÓMO FUNCIONA
+══════════════════════════════════════ -->
+<section id="como">
+  <div class="feature-tag reveal">Cómo funciona</div>
+  <h2 class="feature-headline reveal delay-1" style="max-width:600px;">
+    Cuatro pasos. Cero complicaciones.
+  </h2>
+  <div class="steps-grid">
+    <div class="reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Elige tu destino</div>
+      <div class="step-text">Selecciona a dónde vas y la app calcula la tarifa al instante usando el tarifario público. Sin estimaciones vagas.</div>
+    </div>
+    <div class="reveal delay-1">
+      <div class="step-num">02</div>
+      <div class="step-title">Selecciona tu conductor</div>
+      <div class="step-text">Ves el directorio de conductores certificados cerca de ti — nombre, calificación, especialidad y tiempo de llegada.</div>
+    </div>
+    <div class="reveal delay-2">
+      <div class="step-num">03</div>
+      <div class="step-title">Confirma y paga</div>
+      <div class="step-text">Elige fecha, hora y método de pago. El conductor recibe la solicitud con su ganancia visible antes de aceptar.</div>
+    </div>
+    <div class="reveal delay-3">
+      <div class="step-num">04</div>
+      <div class="step-title">Viaja con confianza</div>
+      <div class="step-text">Sigue la ruta en tiempo real. Al llegar, califica tu experiencia. Tu historial y el del conductor se actualizan automáticamente.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     TARIFARIO
+══════════════════════════════════════ -->
+<section id="tarifario">
+  <div class="section-tag reveal" style="background:rgba(196,146,42,0.12);border-color:rgba(196,146,42,0.2);color:var(--gold-l);">Tarifario público</div>
+  <h2 class="pillars-headline reveal delay-1" style="max-width:640px;">
+    El precio que ves<br>es el precio que pagas.
+  </h2>
+  <div class="tarifa-grid">
+    <div class="tarifa-card reveal">
+      <div class="tarifa-type">Servicio diurno</div>
+      <div class="tarifa-price" style="font-size:28px;letter-spacing:-0.5px;">Tarifa base</div>
+      <div class="tarifa-unit">Calculada por distancia y tiempo</div>
+      <div class="tarifa-items">
+        <div class="tarifa-item">Banderazo fijo de inicio</div>
+        <div class="tarifa-item">Costo por kilómetro recorrido</div>
+        <div class="tarifa-item">Tarifa mínima garantizada</div>
+      </div>
+    </div>
+    <div class="tarifa-card reveal delay-1">
+      <div class="tarifa-type">Servicio nocturno · 22h–6h</div>
+      <div class="tarifa-price" style="font-size:28px;letter-spacing:-0.5px;">Recargo horario</div>
+      <div class="tarifa-unit">Aplicado automáticamente</div>
+      <div class="tarifa-items">
+        <div class="tarifa-item">Visible antes de confirmar</div>
+        <div class="tarifa-item">Mismo cálculo, distinto horario</div>
+        <div class="tarifa-item">Sin cobros manuales</div>
+      </div>
+    </div>
+    <div class="tarifa-card reveal delay-2">
+      <div class="tarifa-type">Zonas de alta demanda</div>
+      <div class="tarifa-price" style="font-size:28px;letter-spacing:-0.5px;">Recargo de zona</div>
+      <div class="tarifa-unit">Zona Hotelera, eventos, temporada</div>
+      <div class="tarifa-items">
+        <div class="tarifa-item">Mostrado antes del viaje</div>
+        <div class="tarifa-item">Calculado con parámetros públicos</div>
+        <div class="tarifa-item">Sin sorpresas al llegar</div>
+      </div>
+    </div>
+    <div class="tarifa-card reveal delay-3">
+      <div class="tarifa-type">Aeropuerto · Tarifa fija</div>
+      <div class="tarifa-price" style="font-size:28px;letter-spacing:-0.5px;">Precio cerrado</div>
+      <div class="tarifa-unit">Acordado antes de salir</div>
+      <div class="tarifa-items">
+        <div class="tarifa-item">Terminal 2, Terminal 4 y más</div>
+        <div class="tarifa-item">Sin medidor en ruta</div>
+        <div class="tarifa-item">Lo que se acuerda es lo que se paga</div>
+      </div>
+    </div>
+  </div>
+  <div class="tarifa-note reveal delay-1">
+    <div class="tarifa-note-icon">💡</div>
+    <div class="tarifa-note-text">
+      <strong>Tarifario siempre visible.</strong> Cada tipo de servicio tiene parámetros públicos consultables desde la app. Los recargos por zona, horario o demanda se muestran antes de confirmar — tanto al pasajero como al conductor. Lo que acuerdan es exactamente lo que se cobra.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CTA FINAL
+══════════════════════════════════════ -->
+<section id="cta">
+  <h2 class="cta-headline reveal">
+    Únete a la<br><em>nueva movilidad.</em>
+  </h2>
+  <p class="cta-sub reveal delay-1">
+    Ka'an Move ya opera en Cancún. Conductores certificados, pasajeros satisfechos, socios con visibilidad total.
+  </p>
+  <div class="cta-cards">
+    <div class="cta-card cta-card-2 reveal">
+      <div class="cta-card-emoji">👨‍✈️</div>
+      <div class="cta-card-title">Soy conductor</div>
+      <div class="cta-card-text">Regístrate, certifícate y empieza a ganar con tarifas claras desde el primer servicio.</div>
+      <a href="#demo" class="cta-card-btn gold">Registrar unidad →</a>
+    </div>
+    <div class="cta-card cta-card-1 reveal delay-1">
+      <div class="cta-card-emoji">🧳</div>
+      <div class="cta-card-title">Soy pasajero</div>
+      <div class="cta-card-text">Descarga la app y reserva tu primer traslado con el conductor de tu elección en Cancún.</div>
+      <a href="#demo" class="cta-card-btn teal">Reservar ahora →</a>
+    </div>
+    <div class="cta-card cta-card-3 reveal delay-2">
+      <div class="cta-card-emoji">🏢</div>
+      <div class="cta-card-title">Soy socio</div>
+      <div class="cta-card-text">Integra tu flota y accede al dashboard B2B con visibilidad total de ingresos, puntualidad y documentos.</div>
+      <a href="#demo" class="cta-card-btn">Conocer modelo →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CONTACTO
+══════════════════════════════════════ -->
+<section id="contacto">
+  <div class="contact-wrap">
+
+    <!-- Copy + info -->
+    <div class="contact-copy reveal">
+      <div class="contact-tag">Contacto</div>
+      <h2 class="contact-headline">Escríbenos.<br><em>Respondemos.</em></h2>
+      <p class="contact-sub">¿Tienes dudas sobre la plataforma, quieres unirte como conductor o socio, o simplemente quieres saber más? Mándanos un mensaje y te respondemos a la brevedad.</p>
+      <div class="contact-info">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">✉️</div>
+          <div>
+            <div class="contact-info-label">Correo electrónico</div>
+            <div class="contact-info-val">Kaanmove@gmail.com</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📍</div>
+          <div>
+            <div class="contact-info-label">Ubicación</div>
+            <div class="contact-info-val">Cancún, Quintana Roo</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">⏱️</div>
+          <div>
+            <div class="contact-info-label">Tiempo de respuesta</div>
+            <div class="contact-info-val">Menos de 24 horas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="contact-form-wrap reveal delay-2">
+      <div id="cf-form-view">
+        <div class="cf-row">
+          <div>
+            <label class="cf-label" for="cf-nombre">Nombre</label>
+            <input class="cf-input" id="cf-nombre" type="text" placeholder="Tu nombre">
+          </div>
+          <div>
+            <label class="cf-label" for="cf-email">Correo</label>
+            <input class="cf-input" id="cf-email" type="email" placeholder="tu@correo.com">
+          </div>
+        </div>
+        <label class="cf-label" for="cf-asunto">Asunto</label>
+        <input class="cf-input" id="cf-asunto" type="text" placeholder="¿En qué te podemos ayudar?">
+        <label class="cf-label" for="cf-mensaje">Mensaje</label>
+        <textarea class="cf-textarea" id="cf-mensaje" placeholder="Cuéntanos más..."></textarea>
+        <button class="cf-submit" onclick="enviarContacto()">Enviar mensaje →</button>
+      </div>
+      <div class="cf-success" id="cf-success">
+        <div class="cf-success-icon">✅</div>
+        <div class="cf-success-title">¡Mensaje enviado!</div>
+        <div class="cf-success-sub">Se abrió tu cliente de correo con el mensaje listo.<br>Confirma el envío y te respondemos pronto.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <img src="logo.png" alt="Ka'an Move" style="height:52px;width:auto;opacity:0.88;">
+      </div>
+      <p class="footer-desc">Plataforma de transporte certificado para Cancún y Quintana Roo. Tarifario público. Conductor verificado. Cero costos ocultos.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <div class="footer-col-title">Plataforma</div>
+        <a href="#pasajero">Para pasajeros</a>
+        <a href="#conductor">Para conductores</a>
+        <a href="#socio">Para socios</a>
+        <a href="#demo">Demo interactiva</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Información</div>
+        <a href="#tarifario">Tarifario público</a>
+        <a href="#como">Cómo funciona</a>
+        <a href="#pillars">Certificación</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Contacto</div>
+        <a href="#contacto">Enviar mensaje</a>
+        <a href="mailto:Kaanmove@gmail.com">Kaanmove@gmail.com</a>
+        <a href="#contacto">Cancún, Q. Roo</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">Ka'an Move © 2026 · Cancún, Quintana Roo · Proyecto de Titulación</div>
+    <div class="footer-cert">
+      <span>✓</span>
+      Conductores certificados · Cancún, Q. Roo
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+/* ── NAV SCROLL ── */
+const nav = document.getElementById('main-nav');
+let heroBottom = 0;
+
+function updateNav() {
+  const scrollY = window.scrollY;
+  const darkSections = ['hero','marquee-section','pillars','conductor','demo','tarifario','cta'];
+  const sections = document.querySelectorAll('section, .marquee-section');
+  let currentDark = false;
+
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 40 && rect.bottom > 40) {
+      const id = sec.id || sec.className.split(' ')[0];
+      const darkIds = ['hero', 'pillars', 'conductor', 'demo', 'tarifario', 'cta'];
+      currentDark = darkIds.some(d => sec.id === d || sec.className.includes('marquee'));
+    }
+  });
+
+  if (scrollY > 40) {
+    nav.classList.add('scrolled');
+    if (currentDark) { nav.classList.add('dark'); } else { nav.classList.remove('dark'); }
+  } else {
+    nav.classList.remove('scrolled');
+    nav.classList.add('dark');
+  }
+}
+
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+/* ── SCROLL REVEAL ── */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* ── COUNTERS ── */
+function animateCounter(el, end, duration = 1400, decimals = 0) {
+  if (!el) return;
+  const start = performance.now();
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 4);
+    const current = Math.floor(ease * end);
+    el.textContent = decimals ? current.toFixed(decimals) : current;
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = end;
+  }
+  requestAnimationFrame(step);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(document.getElementById('cnt-1'), 47, 1600);
+      animateCounter(document.getElementById('cnt-2'), 12, 1800);
+      animateCounter(document.getElementById('cnt-3'), 0, 800);
+      counterObserver.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+
+const statsSection = document.getElementById('stats');
+if (statsSection) counterObserver.observe(statsSection);
+
+/* ── MOBILE MENU ── */
+let menuOpen = false;
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  // Simple: toggle nav links visibility on mobile
+  const links = document.querySelector('.nav-links');
+  if (!links) return;
+  if (menuOpen) {
+    links.style.display = 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'fixed';
+    links.style.inset = '0';
+    links.style.background = 'rgba(6,12,16,0.97)';
+    links.style.justifyContent = 'center';
+    links.style.alignItems = 'center';
+    links.style.gap = '32px';
+    links.style.zIndex = '999';
+    links.style.fontSize = '24px';
+    links.querySelectorAll('a').forEach(a => { a.style.color = 'white'; a.onclick = () => toggleMenu(); });
+  } else {
+    links.style.cssText = '';
+  }
+}
+
+/* ── CONTACTO ── */
+function enviarContacto(){
+  const nombre  = document.getElementById('cf-nombre').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const asunto  = document.getElementById('cf-asunto').value.trim() || 'Consulta desde el sitio web';
+  const mensaje = document.getElementById('cf-mensaje').value.trim();
+  if(!nombre || !email || !mensaje){
+    alert('Por favor completa tu nombre, correo y mensaje.');
+    return;
+  }
+  const body = `Nombre: ${nombre}%0ACorreo: ${email}%0A%0A${encodeURIComponent(mensaje)}`;
+  window.location.href = `mailto:Kaanmove@gmail.com?subject=${encodeURIComponent(asunto)}&body=${body}`;
+  setTimeout(()=>{
+    document.getElementById('cf-form-view').style.display = 'none';
+    document.getElementById('cf-success').style.display   = 'block';
+  }, 800);
+}
+
+/* ── DIRECTORIO FILTER ── */
+function filterDir(btn, zone) {
+  document.querySelectorAll('.dir-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.dcard').forEach(card => {
+    const zones = card.dataset.zone || 'todos';
+    const show = zone === 'todos' || zones.includes(zone);
+    card.style.transition = 'opacity .3s, transform .3s';
+    if (show) {
+      card.style.opacity = '1';
+      card.style.transform = '';
+      card.style.pointerEvents = '';
+    } else {
+      card.style.opacity = '0.15';
+      card.style.transform = 'scale(0.97)';
+      card.style.pointerEvents = 'none';
+    }
+  });
+}
+
+/* ── SMOOTH ANCHOR SCROLLING ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

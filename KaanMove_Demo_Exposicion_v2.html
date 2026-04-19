@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ka'an Move — Demo Exposición v2</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --teal:#0B7A87;--teal-l:#0EA5B5;--teal-gl:#E8F7F9;
+  --gold:#C8922A;--gold-l:#E8B84B;--gold-bg:#FEF7E8;
+  --green:#18A86B;--grn-bg:#E6F9F2;
+  --red:#E5433A;--red-bg:#FEF2F2;
+  --purple:#6D28D9;--purple-bg:#F3F0FF;
+  --dark:#040C10;--dark2:#091520;--dark3:#0E2030;
+  --gray:#4A5E6C;--gray-l:#8FA3B0;
+  --light:#EEF4F7;--white:#FFFFFF;--border:#DDE5EC;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+
+body{
+  background:linear-gradient(135deg,#040C10 0%,#091520 50%,#0B2030 100%);
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;padding:32px 16px 80px;
+}
+
+/* ── HEADER ── */
+.demo-header{
+  text-align:center;margin-bottom:28px;
+  animation:fadeDown .6s ease both;
+}
+.demo-brand{
+  font-size:11px;font-weight:700;letter-spacing:4px;
+  color:rgba(14,165,181,.7);text-transform:uppercase;margin-bottom:8px;
+}
+.demo-title{
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(24px,4vw,36px);font-weight:800;color:white;
+  letter-spacing:-0.5px;line-height:1.1;
+}
+.demo-title span{
+  background:linear-gradient(90deg,var(--teal-l),var(--gold-l));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.demo-sub{font-size:13px;color:rgba(255,255,255,.35);margin-top:6px;font-weight:300;}
+
+/* ── PHONE PAIR ── */
+.phone-pair{
+  display:flex;gap:32px;align-items:flex-start;
+  flex-wrap:wrap;justify-content:center;
+}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.phone-label{
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:rgba(255,255,255,.3);
+}
+
+/* ── PHONE SHELL ── */
+.phone{
+  width:375px;height:812px;
+  background:var(--white);
+  border-radius:50px;
+  box-shadow:0 0 0 10px #1A2830,0 0 0 12px #0C1820,0 40px 80px rgba(0,0,0,.6);
+  overflow:hidden;position:relative;
+  display:flex;flex-direction:column;flex-shrink:0;
+}
+.notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#1A2830;
+  border-radius:0 0 22px 22px;z-index:200;
+}
+.status-bar{
+  height:44px;padding:12px 26px 0;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-shrink:0;z-index:50;position:relative;
+}
+.status-time{font-size:15px;font-weight:700;color:var(--dark);}
+.status-icons{font-size:13px;color:var(--dark);display:flex;gap:5px;}
+
+/* ── SCREENS ── */
+.screens{flex:1;overflow:hidden;position:relative;}
+.screen{
+  position:absolute;inset:0;
+  overflow-y:auto;overflow-x:hidden;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s;scrollbar-width:none;
+}
+.screen::-webkit-scrollbar{display:none;}
+.screen.active{opacity:1;pointer-events:all;}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  height:82px;border-top:1px solid var(--border);
+  display:flex;align-items:flex-start;padding-top:10px;
+  flex-shrink:0;background:var(--white);
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;font-size:8.5px;font-weight:600;color:var(--gray-l);
+  letter-spacing:.3px;text-transform:uppercase;border:none;
+  background:none;font-family:'DM Sans',sans-serif;transition:color .2s;
+}
+.nav-item.active{color:var(--teal);}
+.nav-icon{font-size:20px;}
+
+/* ── SHARED UI ── */
+.hero-grad{
+  padding:22px 20px 28px;color:white;
+  position:relative;overflow:hidden;
+}
+.hero-grad::before{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:160px;height:160px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.hero-grad::after{
+  content:'';position:absolute;right:40px;bottom:-40px;
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.hero-greeting{font-size:12px;opacity:.7;font-weight:400;margin-bottom:3px;}
+.hero-name{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:800;margin-bottom:2px;}
+.hero-sub{font-size:11px;opacity:.6;}
+.hero-stats{display:flex;gap:10px;margin-top:16px;}
+.hstat{
+  flex:1;background:rgba(255,255,255,.14);border-radius:14px;
+  padding:12px 8px;text-align:center;
+}
+.hstat-n{font-family:'DM Sans',sans-serif;font-size:19px;font-weight:800;}
+.hstat-l{font-size:8.5px;opacity:.7;text-transform:uppercase;letter-spacing:.8px;margin-top:2px;}
+
+.section{padding:16px 20px 0;}
+.slabel{
+  font-size:9.5px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gray-l);margin-bottom:10px;
+}
+.card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:18px;padding:16px;margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.chip{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:20px;font-size:9.5px;font-weight:700;}
+.chip-teal{background:var(--teal-gl);color:var(--teal);}
+.chip-gold{background:var(--gold-bg);color:var(--gold);}
+.chip-green{background:var(--grn-bg);color:var(--green);}
+.chip-red{background:var(--red-bg);color:var(--red);}
+.chip-purple{background:var(--purple-bg);color:var(--purple);}
+
+.row-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid var(--border);
+}
+.row-item:last-child{border-bottom:none;}
+.row-left{display:flex;align-items:center;gap:10px;}
+.ricon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.rtitle{font-size:13px;font-weight:600;color:var(--dark);}
+.rsub{font-size:11px;color:var(--gray-l);}
+.rval{font-size:13px;font-weight:700;color:var(--dark);}
+.avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;flex-shrink:0;}
+.stars{color:#F59E0B;font-size:13px;}
+.btn-primary{
+  width:100%;padding:15px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,var(--teal),var(--teal-l));
+  color:white;font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;
+}
+.btn-primary:active{opacity:.85;}
+.btn-outline{
+  padding:12px;border:1.5px solid var(--border);
+  border-radius:14px;background:transparent;
+  color:var(--dark);font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;
+}
+.pad{height:24px;}
+.sync-bar{
+  background:var(--teal-gl);padding:7px 20px;
+  display:flex;align-items:center;gap:8px;
+  font-size:10.5px;font-weight:600;color:var(--teal);
+  border-bottom:1px solid var(--border);
+}
+.sync-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);animation:blink 1.5s infinite;flex-shrink:0;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.input-group{margin-bottom:12px;}
+.input-label{font-size:10px;font-weight:700;color:var(--gray-l);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.input-mock{
+  background:var(--light);border-radius:12px;
+  padding:12px 14px;font-size:13px;color:var(--dark);
+  border:1.5px solid transparent;display:flex;align-items:center;gap:8px;
+}
+.input-mock.filled{border-color:var(--teal);background:var(--teal-gl);}
+
+/* ── MAP ── */
+.map-real{
+  border-radius:16px;overflow:hidden;
+  position:relative;border:1px solid var(--border);
+  margin-bottom:12px;
+}
+.map-loading{
+  position:absolute;inset:0;background:#DFF0F2;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;z-index:10;gap:7px;
+  font-size:11px;color:var(--gray-l);font-weight:600;border-radius:16px;
+}
+.map-spin{
+  width:22px;height:22px;border:2.5px solid var(--border);
+  border-top-color:var(--teal);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.map-lbl{
+  position:absolute;bottom:8px;left:8px;z-index:500;
+  background:white;border-radius:9px;padding:5px 11px;
+  font-size:10px;font-weight:700;color:var(--teal);
+  box-shadow:0 2px 8px rgba(0,0,0,.15);pointer-events:none;
+}
+
+/* ── DESTINO OPTIONS ── */
+.dest-opt{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 15px;border-radius:14px;
+  border:1.5px solid var(--border);background:var(--white);
+  cursor:pointer;transition:all .2s;margin-bottom:8px;
+}
+.dest-opt:hover,.dest-opt.sel{border-color:var(--teal);background:var(--teal-gl);}
+.dest-opt .di{font-size:22px;flex-shrink:0;}
+.dest-name{font-size:13px;font-weight:700;color:var(--dark);}
+.dest-detail{font-size:10px;color:var(--gray-l);margin-top:1px;}
+.dest-price{text-align:right;font-size:12px;font-weight:700;color:var(--teal);}
+.dest-sub{font-size:10px;color:var(--gray-l);}
+
+/* ── TIPO RESERVA ── */
+.res-types{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.res-type{
+  border:1.5px solid var(--border);border-radius:14px;
+  padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;
+}
+.res-type.sel{border-color:var(--teal);background:var(--teal-gl);}
+.res-type-ico{font-size:20px;margin-bottom:4px;}
+.res-type-lbl{font-size:10px;font-weight:700;color:var(--dark);}
+.res-type-sub{font-size:9px;color:var(--gray-l);margin-top:2px;}
+
+/* ── CALENDARIO MINI ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px;}
+.cal-day-lbl{font-size:8.5px;color:var(--gray-l);text-align:center;font-weight:600;}
+.cal-day{
+  padding:8px 4px;text-align:center;border-radius:10px;
+  cursor:pointer;font-size:11.5px;font-weight:600;color:var(--gray);transition:all .2s;
+}
+.cal-day.today{color:var(--teal);font-weight:800;}
+.cal-day.sel{background:var(--teal);color:white;}
+.cal-day.dis{color:var(--border);cursor:default;}
+.time-slots{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+.tslot{
+  padding:7px 13px;border-radius:10px;border:1.5px solid var(--border);
+  font-size:11.5px;font-weight:600;color:var(--gray);cursor:pointer;transition:all .2s;
+}
+.tslot.sel{border-color:var(--teal);background:var(--teal-gl);color:var(--teal);}
+.tslot.busy{color:var(--border);cursor:default;text-decoration:line-through;}
+
+/* ── PAX ── */
+.pax-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;}
+.pax-ctrl{display:flex;align-items:center;gap:14px;}
+.pax-btn{
+  width:34px;height:34px;border-radius:50%;
+  border:1.5px solid var(--border);background:white;
+  font-size:18px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-weight:700;color:var(--teal);transition:all .2s;
+}
+.pax-btn:hover{border-color:var(--teal);background:var(--teal-gl);}
+.pax-n{font-family:'DM Sans',sans-serif;font-size:20px;font-weight:800;color:var(--dark);min-width:24px;text-align:center;}
+
+/* ── PAY CARD ── */
+.pay-card{
+  background:linear-gradient(135deg,#1C3A4A,#0B7A87);
+  border-radius:18px;padding:18px;margin-bottom:10px;color:white;
+}
+.pay-num{font-family:'DM Sans',monospace;font-size:14px;letter-spacing:3px;margin:12px 0 8px;}
+.pay-row{display:flex;justify-content:space-between;font-size:11px;opacity:.7;}
+
+/* ── TIPS ── */
+.tip-row{display:flex;gap:7px;margin-bottom:12px;}
+.tip-btn{
+  flex:1;padding:10px;border-radius:12px;border:1.5px solid var(--border);
+  background:white;font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:700;color:var(--gray);cursor:pointer;transition:all .2s;
+}
+.tip-btn.sel{border-color:var(--gold);background:var(--gold-bg);color:var(--gold);}
+
+/* ── CONFIRM CARD ── */
+.confirm-card{
+  background:linear-gradient(135deg,var(--teal),var(--teal-l));
+  border-radius:20px;padding:22px;color:white;margin-bottom:14px;
+}
+.confirm-rows{display:flex;flex-direction:column;gap:9px;margin-top:14px;}
+.confirm-row{display:flex;justify-content:space-between;font-size:13px;}
+.confirm-row span:first-child{opacity:.75;}
+.confirm-row span:last-child{font-weight:700;}
+
+/* ── DRIVER CARD ── */
+.driver-card{
+  background:linear-gradient(135deg,#E8F7F9,#F0FAF8);
+  border:1.5px solid var(--teal-gl);
+  border-radius:20px;padding:18px;
+  display:flex;gap:14px;align-items:center;margin-bottom:12px;
+}
+
+/* ── SIND CARD ── */
+.sind-card{
+  background:linear-gradient(135deg,var(--dark2),#1A3545);
+  border-radius:18px;padding:18px;color:white;margin-bottom:12px;
+}
+.sbtn{flex:1;padding:9px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.sbtn-w{background:white;color:var(--dark);}
+.sbtn-g{background:rgba(255,255,255,.15);color:white;}
+
+/* ── HTABS ── */
+.htabs{display:flex;gap:7px;overflow-x:auto;padding:0 0 10px;scrollbar-width:none;}
+.htabs::-webkit-scrollbar{display:none;}
+.htab{
+  flex-shrink:0;padding:7px 15px;border-radius:20px;
+  font-size:12px;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--border);color:var(--gray);
+  background:white;transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.htab.active{background:var(--teal);color:white;border-color:var(--teal);}
+
+/* ── CONDUCTOR SOLICITUD ── */
+.sol-banner{
+  background:linear-gradient(135deg,#040C10,#0E2030);
+  padding:20px;color:white;
+}
+.sol-ring{
+  width:58px;height:58px;border-radius:50%;
+  border:3px solid var(--teal-l);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+  animation:ring 2s ease-in-out infinite;
+}
+@keyframes ring{0%,100%{box-shadow:0 0 0 0 rgba(14,165,181,.5);}50%{box-shadow:0 0 0 12px rgba(14,165,181,0);}}
+
+/* ── GANANCIA CONDUCTOR (simplificada) ── */
+.ganancia-hero{
+  background:linear-gradient(135deg,#0D4A1A,var(--green));
+  border-radius:18px;padding:22px;color:white;margin-bottom:12px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.ganancia-hero::before{
+  content:'';position:absolute;right:-20px;top:-20px;
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(255,255,255,.07);
+}
+.gan-label{font-size:11px;opacity:.75;margin-bottom:6px;font-weight:500;}
+.gan-amount{font-family:'DM Sans',sans-serif;font-size:44px;font-weight:900;line-height:1;margin-bottom:6px;}
+.gan-sub{font-size:12px;opacity:.6;font-weight:300;}
+
+/* ── UNIT CARDS ── */
+.unit-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.unit-row::-webkit-scrollbar{display:none;}
+.unit-card{
+  flex-shrink:0;width:115px;background:var(--white);
+  border:1.5px solid var(--border);border-radius:14px;
+  padding:11px;cursor:pointer;transition:all .2s;text-align:center;
+}
+.unit-card.sel,.unit-card:hover{border-color:var(--teal);background:var(--teal-gl);}
+.ue{font-size:26px;margin-bottom:4px;}
+.un{font-size:10.5px;font-weight:700;color:var(--dark);}
+.ueta{font-size:9.5px;color:var(--green);font-weight:600;margin-top:3px;}
+.urat{font-size:9px;color:var(--gray-l);}
+
+/* ── RUTA RESUMEN ── */
+.ruta-summary{
+  background:var(--teal-gl);border-radius:14px;
+  padding:14px;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.rs-left .rs-ruta{font-size:11px;font-weight:700;color:var(--teal);margin-bottom:3px;}
+.rs-left .rs-info{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:var(--dark);}
+.rs-right .rs-precio{font-family:'DM Sans',sans-serif;font-size:20px;font-weight:900;color:var(--teal);}
+.rs-right .rs-lbl{font-size:10px;color:var(--gray-l);}
+
+/* ── CONNECTOR ── */
+.connector-line{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;padding:0 4px;margin-top:120px;
+  transition:all .4s ease;
+}
+.c-dot{width:8px;height:8px;border-radius:50%;background:rgba(14,165,181,.4);transition:all .4s ease;}
+.c-line{width:2px;height:40px;background:linear-gradient(to bottom,rgba(14,165,181,.3),rgba(14,165,181,.1));transition:all .4s ease;}
+.c-label{
+  font-size:9px;font-weight:700;letter-spacing:2px;
+  color:rgba(255,255,255,.2);text-transform:uppercase;
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  transition:all .4s ease;
+}
+/* sync-active state */
+.connector-line.sync-active .c-dot{
+  background:var(--teal);
+  box-shadow:0 0 10px var(--teal),0 0 20px rgba(14,165,181,.5);
+  animation:dotPulse 1s ease-in-out infinite;
+}
+.connector-line.sync-active .c-line{
+  background:linear-gradient(to bottom,var(--teal),rgba(14,165,181,.3));
+  animation:linePulse 1s ease-in-out infinite;
+}
+.connector-line.sync-active .c-label{
+  color:var(--teal);
+  text-shadow:0 0 8px rgba(14,165,181,.7);
+}
+@keyframes dotPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.6);}}
+@keyframes linePulse{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+/* ── INSTRUCTIONS ── */
+.instructions{
+  margin-top:28px;max-width:760px;
+  animation:fadeUp .6s .4s ease both;opacity:0;animation-fill-mode:both;
+}
+.inst-title{
+  font-size:16px;font-weight:700;letter-spacing:2px;
+  color:rgba(14,165,181,.75);text-transform:uppercase;
+  text-align:center;margin-bottom:16px;
+}
+.inst-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.inst-card{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;padding:16px 20px;
+  font-size:15px;color:rgba(255,255,255,.65);
+  flex:1;min-width:160px;text-align:center;line-height:1.5;
+}
+.inst-card div:first-child{font-size:26px;margin-bottom:8px;}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:820px){
+  .phone-pair{flex-direction:column;}
+  .connector-line{display:none;}
+  .phone{width:355px;height:780px;}
+}
+</style>
+</head>
+<body>
+
+<div class="demo-header">
+  <img src="logo.png" alt="Ka'an Move" style="height:clamp(54px,8vw,80px);margin-bottom:10px;filter:drop-shadow(0 0 18px rgba(14,165,181,.45));">
+  <div class="demo-title">Reserva <span>inteligente</span> en Cancún</div>
+  <div class="demo-sub">Elige destino · La ruta aparece en ambas pantallas · El conductor ve solo su ganancia</div>
+</div>
+
+<div class="phone-pair">
+
+<!-- ══════════════════════════════════════
+     PASAJERO — JORGE CRUZ
+══════════════════════════════════════ -->
+<div class="phone-wrap" id="wrap-pasajero" style="animation:fadeUp .5s .1s ease both;">
+  <div class="phone-label">🧳 Pasajero — Jorge Cruz</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time" id="clk-p">9:41</span>
+      <span class="status-icons">📶 🔋</span>
+    </div>
+    <div class="screens">
+
+      <!-- P1: ELEGIR DESTINO -->
+      <div class="screen active" id="p-inicio">
+        <div class="hero-grad" style="background:linear-gradient(160deg,#1A5C3A,var(--green));">
+          <div class="hero-greeting">¡Hola, Jorge! 👋</div>
+          <div class="hero-name">¿A dónde vas?</div>
+          <div class="hero-sub">Cancún · ☀️ 32°C · Choferes disponibles cerca</div>
+        </div>
+        <div class="sync-bar"><div class="sync-dot"></div>Origen: Plaza Kukulcán, Zona Hotelera</div>
+
+        <!-- Mapa origen con taxis cercanos -->
+        <div class="section" style="margin-top:14px;">
+          <div class="slabel">Tu ubicación · Unidades cerca</div>
+          <div class="map-real" style="height:170px;" id="map-origen-box">
+            <div class="map-loading" id="ml-origen"><div class="map-spin"></div>Cargando mapa…</div>
+            <div id="map-origen" style="height:170px;width:100%;"></div>
+            <div class="map-lbl">📍 Plaza Kukulcán · 4 unidades cerca</div>
+          </div>
+          <div class="unit-row">
+            <div class="unit-card sel" onclick="selUnit(this)"><div class="ue">🚕</div><div class="un">ECO-110</div><div class="ueta">⏱ 2 min</div><div class="urat">⭐ 4.9</div></div>
+            <div class="unit-card" onclick="selUnit(this)"><div class="ue">🚗</div><div class="un">ECO-205</div><div class="ueta">⏱ 4 min</div><div class="urat">⭐ 4.8</div></div>
+            <div class="unit-card" onclick="selUnit(this)"><div class="ue">🚙</div><div class="un">ECO-308</div><div class="ueta">⏱ 6 min</div><div class="urat">⭐ 4.7</div></div>
+          </div>
+        </div>
+
+        <!-- Destinos -->
+        <div class="section">
+          <div class="slabel">Selecciona tu destino</div>
+
+          <div class="dest-opt" onclick="selDest(this,'americas')" data-key="americas">
+            <div class="di">🛍️</div>
+            <div style="flex:1;">
+              <div class="dest-name">Plaza Las Américas</div>
+              <div class="dest-detail">Av. Tulum, SM 4 · Centro</div>
+            </div>
+            <div><div class="dest-price">$161.35</div><div class="dest-sub">14 km</div></div>
+          </div>
+
+          <div class="dest-opt" onclick="selDest(this,'aeropuerto')" data-key="aeropuerto">
+            <div class="di">✈️</div>
+            <div style="flex:1;">
+              <div class="dest-name">Aeropuerto CUN</div>
+              <div class="dest-detail">Terminal 2 · 22 km</div>
+            </div>
+            <div><div class="dest-price">$233.70</div><div class="dest-sub">22 km</div></div>
+          </div>
+
+          <div class="dest-opt" onclick="selDest(this,'centro')" data-key="centro">
+            <div class="di">🏛️</div>
+            <div style="flex:1;">
+              <div class="dest-name">Centro Histórico</div>
+              <div class="dest-detail">Av. Uxmal, SM 21</div>
+            </div>
+            <div><div class="dest-price">$194.25</div><div class="dest-sub">18 km</div></div>
+          </div>
+
+          <div class="dest-opt" onclick="selDest(this,'iberostar')" data-key="iberostar">
+            <div class="di">🏨</div>
+            <div style="flex:1;">
+              <div class="dest-name">Hotel Iberostar</div>
+              <div class="dest-detail">Blvd. Kukulcán km 17</div>
+            </div>
+            <div><div class="dest-price">$104.75</div><div class="dest-sub">7 km</div></div>
+          </div>
+        </div>
+
+        <div class="section" style="padding-bottom:16px;">
+          <button class="btn-primary" id="btn-continuar" onclick="irAReserva()" style="opacity:.4;pointer-events:none;">
+            Selecciona un destino para continuar
+          </button>
+        </div>
+        <div class="pad"></div>
+      </div>
+
+      <!-- P2: RESERVA -->
+      <div class="screen" id="p-reserva">
+        <div class="hero-grad" style="background:linear-gradient(160deg,#1A5C3A,var(--green));">
+          <button onclick="showP('p-inicio')" style="background:rgba(255,255,255,.15);border:none;color:white;border-radius:9px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:10px;font-family:'DM Sans',sans-serif;">← Volver</button>
+          <div class="hero-name">Confirmar reserva</div>
+          <div class="hero-sub" id="p-res-sub">Plaza Kukulcán → …</div>
+        </div>
+        <div class="sync-bar"><div class="sync-dot"></div>Notificando al conductor…</div>
+
+        <!-- Mapa ruta -->
+        <div class="section" style="margin-top:14px;">
+          <div class="slabel">Ruta del servicio</div>
+          <div class="map-real" style="height:170px;" id="map-ruta-p-box">
+            <div class="map-loading" id="ml-ruta-p"><div class="map-spin"></div>Trazando ruta…</div>
+            <div id="map-ruta-p" style="height:170px;width:100%;"></div>
+            <div class="map-lbl" id="lbl-ruta-p">Calculando…</div>
+          </div>
+        </div>
+
+        <!-- Tipo reserva -->
+        <div class="section">
+          <div class="slabel">Tipo de reserva</div>
+          <div class="res-types">
+            <div class="res-type sel" onclick="selResType(this,'unico')">
+              <div class="res-type-ico">🚗</div>
+              <div class="res-type-lbl">Único</div>
+              <div class="res-type-sub">Un traslado</div>
+            </div>
+            <div class="res-type" onclick="selResType(this,'semanal')">
+              <div class="res-type-ico">📅</div>
+              <div class="res-type-lbl">Semanal</div>
+              <div class="res-type-sub">Lun–Dom</div>
+            </div>
+            <div class="res-type" onclick="selResType(this,'mensual')">
+              <div class="res-type-ico">🗓️</div>
+              <div class="res-type-lbl">Mensual</div>
+              <div class="res-type-sub">30 días</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fecha -->
+        <div class="section">
+          <div class="slabel">Fecha</div>
+          <div class="card" style="padding:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <button style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--teal);">‹</button>
+              <span style="font-size:13px;font-weight:700;color:var(--dark);">Abril 2026</span>
+              <button style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--teal);">›</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px;">
+              <div class="cal-day-lbl">L</div><div class="cal-day-lbl">M</div><div class="cal-day-lbl">M</div>
+              <div class="cal-day-lbl">J</div><div class="cal-day-lbl">V</div><div class="cal-day-lbl">S</div><div class="cal-day-lbl">D</div>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-day dis">31</div>
+              <div class="cal-day dis">1</div><div class="cal-day dis">2</div><div class="cal-day dis">3</div>
+              <div class="cal-day dis">4</div><div class="cal-day dis">5</div><div class="cal-day dis">6</div>
+              <div class="cal-day dis">7</div><div class="cal-day dis">8</div><div class="cal-day dis">9</div>
+              <div class="cal-day dis">10</div><div class="cal-day dis">11</div>
+              <div class="cal-day today" onclick="selDay(this)">12</div>
+              <div class="cal-day" onclick="selDay(this)">13</div>
+              <div class="cal-day sel" onclick="selDay(this)">14</div>
+              <div class="cal-day" onclick="selDay(this)">15</div><div class="cal-day" onclick="selDay(this)">16</div>
+              <div class="cal-day" onclick="selDay(this)">17</div><div class="cal-day" onclick="selDay(this)">18</div>
+              <div class="cal-day" onclick="selDay(this)">19</div><div class="cal-day" onclick="selDay(this)">20</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hora -->
+        <div class="section">
+          <div class="slabel">Hora · Mín. 2 hrs anticipación</div>
+          <div class="card">
+            <div class="time-slots">
+              <div class="tslot busy">10:00</div>
+              <div class="tslot busy">11:00</div>
+              <div class="tslot" onclick="selTime(this)">13:00</div>
+              <div class="tslot sel" onclick="selTime(this)">14:00</div>
+              <div class="tslot" onclick="selTime(this)">16:00</div>
+              <div class="tslot" onclick="selTime(this)">18:00</div>
+              <div class="tslot" onclick="selTime(this)">20:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pasajeros -->
+        <div class="section">
+          <div class="slabel">¿Cuántos pasajeros?</div>
+          <div class="card">
+            <div class="pax-row">
+              <div><div class="rtitle">Pasajeros</div><div class="rsub">Máximo 6 personas</div></div>
+              <div class="pax-ctrl">
+                <button class="pax-btn" onclick="chgPax(-1)">−</button>
+                <div class="pax-n" id="pax-n">1</div>
+                <button class="pax-btn" onclick="chgPax(1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Precio -->
+        <div class="section">
+          <div class="slabel">Desglose de tarifa</div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div>
+                <div style="font-size:11px;color:var(--gray-l);" id="p-ruta-lbl-card">…</div>
+                <div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:900;color:var(--dark);" id="p-precio-total">$0.00</div>
+              </div>
+              <span class="chip chip-teal" id="p-tarifa-tag">☀️ Diurna</span>
+            </div>
+            <div class="row-item"><div class="rtitle">Tarifa de inicio</div><div class="rval">$45.00</div></div>
+            <div class="row-item"><div class="rtitle" id="p-km-row">Distancia</div><div class="rval" id="p-km-val">—</div></div>
+            <div class="row-item"><div class="rtitle" id="p-zona-row">Zona Hotelera (+15%)</div><div class="rval" id="p-zona-val" style="color:var(--gold);">—</div></div>
+            
+            <div class="row-item" style="border-top:2px solid var(--border);padding-top:12px;"><div class="rtitle" style="font-size:15px;font-weight:800;">Total</div><div style="font-family:'DM Sans',sans-serif;font-size:18px;font-weight:900;color:var(--teal);" id="p-total">—</div></div>
+          </div>
+        </div>
+
+        <!-- Pago -->
+        <div class="section">
+          <div class="slabel">Método de pago</div>
+          <div class="pay-card">
+            <div style="display:flex;justify-content:space-between;"><span style="font-size:13px;font-weight:600;opacity:.8;">VISA</span><span>💳</span></div>
+            <div class="pay-num">•••• •••• •••• 3074</div>
+            <div class="pay-row"><span>JORGE CRUZ</span><span>11/28</span></div>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:12px;">
+            <button class="htab active" style="flex:1;">💳 Tarjeta</button>
+            <button class="htab" style="flex:1;">💵 Efectivo</button>
+            <button class="htab" style="flex:1;">📱 Transfer.</button>
+          </div>
+        </div>
+
+        <!-- Propina -->
+        <div class="section">
+          <div class="slabel">¿Propina?</div>
+          <div class="tip-row">
+            <button class="tip-btn" onclick="selTip(this)">$0</button>
+            <button class="tip-btn sel" onclick="selTip(this)">$20</button>
+            <button class="tip-btn" onclick="selTip(this)">$30</button>
+            <button class="tip-btn" onclick="selTip(this)">Otro</button>
+          </div>
+        </div>
+
+        <div class="section" style="padding-bottom:16px;">
+          <button class="btn-primary" onclick="confirmarServicio()">
+            Confirmar · <span id="p-btn-precio">$0.00</span>
+          </button>
+        </div>
+        <div class="pad"></div>
+      </div>
+
+      <!-- P3: CONFIRMADO + EN CAMINO -->
+      <div class="screen" id="p-confirmado">
+        <div class="hero-grad" style="background:linear-gradient(160deg,#0D5C2A,var(--green));">
+          <div style="font-size:32px;margin-bottom:6px;">✅</div>
+          <div class="hero-name">¡Reserva confirmada!</div>
+          <div class="hero-sub" id="p-conf-sub">Tu conductor fue notificado</div>
+        </div>
+        <div class="sync-bar"><div class="sync-dot"></div>Carlos Méndez aceptó · En camino</div>
+
+        <!-- Mapa seguimiento en vivo -->
+        <div class="section" style="margin-top:14px;">
+          <div class="slabel">Seguimiento en vivo</div>
+          <div class="map-real" style="height:200px;" id="map-vivo-p-box">
+            <div class="map-loading" id="ml-vivo-p"><div class="map-spin"></div>Localizando conductor…</div>
+            <div id="map-vivo-p" style="height:200px;width:100%;"></div>
+            <div class="map-lbl">🚕 Carlos · ECO-110 · ~3 min</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="driver-card">
+            <div class="avatar" style="background:linear-gradient(135deg,var(--teal),var(--teal-l));">👨</div>
+            <div style="flex:1;">
+              <div style="font-size:16px;font-weight:800;color:var(--dark);">Carlos Méndez</div>
+              <div style="font-size:11px;color:var(--gray-l);margin-bottom:5px;">ECO-110 · Toyota Corolla 2022</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span class="chip chip-teal">✓ Cert. F4</span>
+                <span class="chip chip-green">⭐ 4.9</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <button class="btn-outline" style="flex:1;">📞 Llamar</button>
+            <button class="btn-outline" style="flex:1;">💬 Chat</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="confirm-card">
+            <div style="font-size:12px;opacity:.75;margin-bottom:4px;">Detalles de tu reserva</div>
+            <div style="font-family:'DM Sans',sans-serif;font-size:20px;font-weight:800;">Carlos Méndez · ECO-110</div>
+            <div class="confirm-rows">
+              <div class="confirm-row"><span>📅 Fecha</span><span>Lunes 14 Abr 2026</span></div>
+              <div class="confirm-row"><span>⏰ Hora</span><span>14:00 hrs</span></div>
+              <div class="confirm-row"><span>📍 Origen</span><span>Plaza Kukulcán</span></div>
+              <div class="confirm-row"><span>🏁 Destino</span><span id="conf-dest">…</span></div>
+              <div class="confirm-row"><span>💰 Total</span><span id="conf-total" style="font-size:16px;">$0.00</span></div>
+            </div>
+          </div>
+
+          <!-- Contacto directo desbloqueado -->
+          <div class="slabel">Contacto desbloqueado ✓</div>
+          <div class="card">
+            <div style="background:var(--grn-bg);border-radius:10px;padding:10px;margin-bottom:10px;font-size:11px;color:var(--green);font-weight:600;">
+              ✓ Al confirmar puedes contactar directamente a tu conductor
+            </div>
+            <div class="row-item" style="cursor:pointer;">
+              <div class="row-left"><div class="ricon" style="background:var(--grn-bg);">📞</div><div><div class="rtitle">Carlos Méndez</div><div class="rsub">+52 998 123 4567</div></div></div>
+              <span class="chip chip-green">Llamar</span>
+            </div>
+            <div class="row-item" style="cursor:pointer;">
+              <div class="row-left"><div class="ricon" style="background:var(--teal-gl);">💬</div><div><div class="rtitle">WhatsApp</div><div class="rsub">Mensaje directo</div></div></div>
+              <span class="chip chip-teal">Chat</span>
+            </div>
+          </div>
+
+          <!-- Soporte -->
+          <div class="sind-card">
+            <div style="font-size:20px;margin-bottom:6px;">🏛️</div>
+            <div style="font-size:14px;font-weight:800;margin-bottom:3px;">Sindicato de Taxistas · Cancún</div>
+            <div style="font-size:10px;opacity:.6;line-height:1.5;margin-bottom:10px;">Av. Tulum #312, SM 7 · L–V 8:00–18:00</div>
+            <div style="display:flex;gap:7px;"><button class="sbtn sbtn-w">📍 Ver mapa</button><button class="sbtn sbtn-g">📞 Llamar</button></div>
+          </div>
+        </div>
+        <div class="pad"></div>
+      </div>
+
+    </div><!-- /screens pasajero -->
+    <div class="bottom-nav">
+      <button class="nav-item active"><span class="nav-icon">🏠</span>Inicio</button>
+      <button class="nav-item"><span class="nav-icon">🗺️</span>Mapa</button>
+      <button class="nav-item"><span class="nav-icon">📜</span>Historial</button>
+      <button class="nav-item"><span class="nav-icon">🆘</span>Soporte</button>
+      <button class="nav-item"><span class="nav-icon">👤</span>Perfil</button>
+    </div>
+  </div>
+</div><!-- /wrap-pasajero -->
+
+<!-- CONNECTOR -->
+<div class="connector-line">
+  <div class="c-dot"></div><div class="c-line"></div>
+  <div class="c-label">SINCRONIZADO</div>
+  <div class="c-line"></div><div class="c-dot"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CONDUCTOR — CARLOS MÉNDEZ
+══════════════════════════════════════ -->
+<div class="phone-wrap" id="wrap-conductor" style="animation:fadeUp .5s .25s ease both;">
+  <div class="phone-label">👨‍✈️ Conductor — Carlos Méndez</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time" id="clk-c">9:41</span>
+      <span class="status-icons">📶 🔋</span>
+    </div>
+    <div class="screens">
+
+      <!-- C1: HOME / ESPERA -->
+      <div class="screen active" id="c-home">
+        <div class="hero-grad" style="background:linear-gradient(160deg,#7A5810,var(--gold));">
+          <div class="hero-greeting">Buen día, Carlos 🌅</div>
+          <div class="hero-name">Turno activo</div>
+          <div class="hero-sub">ECO-110 · Zona Hotelera · Disponible</div>
+          <div class="hero-stats">
+            <div class="hstat"><div class="hstat-n">$1,240</div><div class="hstat-l">Ganado hoy</div></div>
+            <div class="hstat"><div class="hstat-n">12</div><div class="hstat-l">Servicios</div></div>
+            <div class="hstat"><div class="hstat-n">4.9⭐</div><div class="hstat-l">Rating</div></div>
+          </div>
+        </div>
+        <div class="sync-bar" id="c-sync-lbl"><div class="sync-dot"></div>Disponible · Sin solicitudes activas</div>
+
+        <!-- Mi posición -->
+        <div class="section" style="margin-top:14px;">
+          <div class="slabel">Mi posición actual</div>
+          <div class="map-real" style="height:170px;" id="map-cond-box">
+            <div class="map-loading" id="ml-cond"><div class="map-spin"></div>Cargando mapa…</div>
+            <div id="map-cond" style="height:170px;width:100%;"></div>
+            <div class="map-lbl">🚕 ECO-110 · Plaza Kukulcán</div>
+          </div>
+        </div>
+
+        <div class="section" style="text-align:center;padding:10px 20px;">
+          <div style="font-size:40px;margin-bottom:10px;">🚦</div>
+          <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:5px;">Sin solicitudes activas</div>
+          <div style="font-size:12px;color:var(--gray-l);line-height:1.6;">Cuando el pasajero seleccione su destino, recibirás la solicitud aquí automáticamente.</div>
+          <div style="margin-top:16px;"><span class="chip chip-gold" style="font-size:11px;padding:6px 16px;">⏳ En espera</span></div>
+        </div>
+
+        <div class="section">
+          <div class="slabel">Mi turno de hoy</div>
+          <div class="card">
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--grn-bg);">✅</div><div><div class="rtitle">Servicios completados</div><div class="rsub">Hoy</div></div></div><div class="rval">12</div></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--gold-bg);">💵</div><div><div class="rtitle">Ganancia del día</div><div class="rsub">Acumulada al momento</div></div></div><div class="rval" style="color:var(--green);">$1,240</div></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--teal-gl);">🗺️</div><div><div class="rtitle">Kilómetros recorridos</div></div></div><div class="rval">98 km</div></div>
+          </div>
+        </div>
+        <div class="pad"></div>
+      </div>
+
+      <!-- C2: SOLICITUD ENTRANTE -->
+      <div class="screen" id="c-solicitud">
+        <div class="sol-banner">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div class="sol-ring">🔔</div>
+            <div>
+              <div style="font-size:12px;opacity:.7;margin-bottom:3px;">Nueva solicitud de reserva</div>
+              <div style="font-family:'DM Sans',sans-serif;font-size:20px;font-weight:800;">¡Jorge Cruz te eligió!</div>
+              <div style="font-size:11px;opacity:.6;margin-top:2px;">Lunes 14 Abr · 14:00 hrs</div>
+            </div>
+          </div>
+        </div>
+        <div class="sync-bar"><div class="sync-dot"></div>Solicitud recibida de Jorge Cruz</div>
+
+        <div class="section" style="margin-top:14px;">
+
+          <!-- GANANCIA SIMPLIFICADA - sin porcentajes -->
+          <div class="ganancia-hero">
+            <div class="gan-label">Tu ganancia por este servicio</div>
+            <div class="gan-amount" id="c-ganancia-monto">$0.00</div>
+            <div class="gan-sub" id="c-ganancia-sub">Pago al completar el servicio</div>
+          </div>
+
+          <!-- Perfil del pasajero -->
+          <div class="card">
+            <div class="slabel" style="margin-bottom:9px;">Pasajero</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="avatar" style="background:linear-gradient(135deg,#1A4A6E,#1A6E9E);">👤</div>
+              <div style="flex:1;">
+                <div style="font-size:15px;font-weight:700;color:var(--dark);">Jorge Cruz</div>
+                <div class="stars">★★★★☆ <span style="font-size:10px;color:var(--gray-l);">4.6 · 12 viajes · Sin incidencias</span></div>
+                <div style="font-size:11px;color:var(--gray-l);margin-top:2px;">📍 Plaza Kukulcán, Zona Hotelera</div>
+              </div>
+              <span class="chip chip-teal">✓ Verificado</span>
+            </div>
+          </div>
+
+          <!-- Detalles del servicio -->
+          <div class="card">
+            <div class="slabel" style="margin-bottom:9px;">Detalles del servicio</div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--teal-gl);">📅</div><div><div class="rtitle">Fecha y hora</div><div class="rsub">Lunes 14 Abril 2026</div></div></div><div class="rval">14:00</div></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--grn-bg);">📍</div><div><div class="rtitle">Origen</div><div class="rsub">Plaza Kukulcán, Z.H.</div></div></div><span class="chip chip-teal">Pickup</span></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--red-bg);">🏁</div><div><div class="rtitle" id="c-dest-titulo">Destino</div><div class="rsub" id="c-dest-dir">…</div></div></div><span class="chip chip-red">Destino</span></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--light);">👥</div><div><div class="rtitle">Pasajeros</div></div></div><div class="rval" id="c-pax-val">1 persona</div></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--purple-bg);">📋</div><div><div class="rtitle">Tipo de reserva</div></div></div><div class="rval" id="c-tipo-res">Único</div></div>
+          </div>
+
+          <!-- MAPA RUTA CONDUCTOR -->
+          <div class="card">
+            <div class="slabel" style="margin-bottom:9px;">Ruta del servicio</div>
+            <div class="map-real" style="height:160px;margin-bottom:0;" id="map-ruta-c-box">
+              <div class="map-loading" id="ml-ruta-c"><div class="map-spin"></div>Trazando ruta…</div>
+              <div id="map-ruta-c" style="height:160px;width:100%;"></div>
+              <div class="map-lbl" id="lbl-ruta-c">Calculando…</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <button class="btn-outline" style="flex:1;padding:11px;" onclick="rechazar()">Declinar</button>
+              <button class="btn-primary" style="flex:1;padding:11px;" onclick="aceptar()">
+                ✓ Aceptar · <span id="c-btn-monto">$0.00</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="pad"></div>
+      </div>
+
+      <!-- C3: SERVICIO ACEPTADO -->
+      <div class="screen" id="c-aceptado">
+        <div class="hero-grad" style="background:linear-gradient(160deg,#0D5C2A,var(--green));">
+          <div class="hero-greeting">Servicio aceptado ✓</div>
+          <div class="hero-name">En camino a Jorge</div>
+          <div class="hero-sub">Plaza Kukulcán · ~2 min</div>
+        </div>
+        <div class="sync-bar" style="background:var(--grn-bg);color:var(--green);">
+          <div class="sync-dot" style="background:var(--green);"></div>
+          Pasajero notificado — sabe que vas en camino
+        </div>
+
+        <!-- Ganancia confirmada -->
+        <div class="section" style="margin-top:14px;">
+          <div class="ganancia-hero">
+            <div class="gan-label">💵 Tu ganancia garantizada</div>
+            <div class="gan-amount" id="c-ganancia-final">$0.00</div>
+            <div class="gan-sub">Se acredita al completar el traslado</div>
+          </div>
+
+          <!-- Mapa ruta completa -->
+          <div class="slabel">Tu ruta completa</div>
+          <div class="map-real" style="height:190px;" id="map-acepto-box">
+            <div class="map-loading" id="ml-acepto"><div class="map-spin"></div>Cargando ruta…</div>
+            <div id="map-acepto" style="height:190px;width:100%;"></div>
+            <div class="map-lbl" id="lbl-acepto">…</div>
+          </div>
+
+          <div class="card">
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--grn-bg);">📍</div><div><div class="rtitle">Recoger en</div><div class="rsub">Plaza Kukulcán, Zona Hotelera</div></div></div><span class="chip chip-green">~2 min</span></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--teal-gl);">🏁</div><div><div class="rtitle">Entregar en</div><div class="rsub" id="c-aceptado-dest">…</div></div></div><span class="chip chip-teal" id="c-aceptado-km">— km</span></div>
+            <div class="row-item"><div class="row-left"><div class="ricon" style="background:var(--gold-bg);">⏱️</div><div><div class="rtitle">Tiempo estimado</div><div class="rsub">Pickup + traslado</div></div></div><div class="rval" id="c-aceptado-tiempo">~0 min</div></div>
+          </div>
+          <button class="btn-primary" onclick="iniciarNav()">📍 Iniciar navegación</button>
+        </div>
+        <div class="pad"></div>
+      </div>
+
+    </div><!-- /screens conductor -->
+    <div class="bottom-nav">
+      <button class="nav-item active"><span class="nav-icon">🏠</span>Inicio</button>
+      <button class="nav-item" onclick="showC('c-solicitud')"><span class="nav-icon">📩</span>Solicitudes</button>
+      <button class="nav-item"><span class="nav-icon">🎓</span>Cursos</button>
+      <button class="nav-item"><span class="nav-icon">💰</span>Ganancias</button>
+      <button class="nav-item"><span class="nav-icon">👤</span>Perfil</button>
+    </div>
+  </div>
+</div><!-- /wrap-conductor -->
+
+</div><!-- /phone-pair -->
+
+<!-- INSTRUCCIONES -->
+<div class="instructions">
+  <div class="inst-title">Cómo usar esta demo</div>
+  <div class="inst-grid">
+    <div class="inst-card"><div>① 🧳</div>Elige un destino en la pantalla del pasajero</div>
+    <div class="inst-card"><div>② 🗺️</div>La ruta real de Cancún aparece en ambos teléfonos</div>
+    <div class="inst-card"><div>③ 📅</div>Confirma la reserva con tipo, fecha y hora</div>
+    <div class="inst-card"><div>④ 📩</div>El conductor recibe la solicitud y acepta</div>
+    <div class="inst-card"><div>⑤ ✅</div>Ambas pantallas confirman el servicio activo</div>
+  </div>
+</div>
+
+<!-- ══════════ JAVASCRIPT ══════════ -->
+<script>
+/* ── DATOS ── */
+const ORIGEN = [21.1385, -86.7453]; // Plaza Kukulcán
+const COND_POS = [21.1390, -86.7440]; // Conductor muy cerca
+
+const DESTINOS = {
+  americas:   { n:"Plaza Las Américas",     ico:"🛍️", coord:[21.1619,-86.8515], dir:"Av. Tulum, SM 4",         km:14, zona:true,  t:18 },
+  aeropuerto: { n:"Aeropuerto CUN",         ico:"✈️", coord:[21.0365,-86.8771], dir:"Terminal 2, CUN",           km:22, zona:false, t:28 },
+  centro:     { n:"Centro Histórico",       ico:"🏛️", coord:[21.1743,-86.8476], dir:"Av. Uxmal, SM 21",         km:18, zona:false, t:23 },
+  iberostar:  { n:"Hotel Iberostar",        ico:"🏨", coord:[21.0872,-86.7712], dir:"Blvd. Kukulcán km 17",     km:7,  zona:true,  t:10 },
+};
+
+/* ── TARIFARIO ── */
+function calcTarifa(key, pax=1){
+  const d = DESTINOS[key];
+  const base = 45, kmC = +(d.km*8.5).toFixed(2), sub = base+kmC;
+  const zona = d.zona ? +(sub*.15).toFixed(2) : 0;
+  const total = +(sub+zona).toFixed(2);
+  const cond  = +(total*.60).toFixed(2);
+  return { base, kmC, zona, paxExtra:0, total, cond };
+}
+
+/* ── ESTADO ── */
+const maps={}, routes={};
+let curDest=null, paxCount=1, tipoRes='unico';
+
+/* ── RELOJ ── */
+function tick(){ const n=new Date(), s=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); document.getElementById('clk-p').textContent=s; document.getElementById('clk-c').textContent=s; }
+tick(); setInterval(tick,30000);
+
+/* ── LEAFLET HELPERS ── */
+function mkMap(id,center,zoom){
+  if(maps[id])return maps[id];
+  const el=document.getElementById(id); if(!el)return null;
+  const m=L.map(id,{zoomControl:false,attributionControl:false,scrollWheelZoom:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(m);
+  m.setView(center,zoom); maps[id]=m; return m;
+}
+function hideLoad(lid){ const l=document.getElementById(lid); if(l)l.style.display='none'; }
+function mkIco(emoji,sz=26){
+  return L.divIcon({className:'',html:`<div style="font-size:${sz}px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));transform:translate(-50%,-90%)">${emoji}</div>`,iconSize:[sz,sz],iconAnchor:[0,0]});
+}
+async function drawRoute(mapId,from,to,lblId){
+  const m=maps[mapId]; if(!m)return;
+  if(routes[mapId]){m.removeLayer(routes[mapId]);}
+  try{
+    const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=geojson`);
+    const d=await r.json();
+    if(!d.routes?.length)return;
+    const layer=L.geoJSON(d.routes[0].geometry,{style:{color:'#0B7A87',weight:4,opacity:.85,dashArray:'8,4',lineCap:'round'}}).addTo(m);
+    routes[mapId]=layer;
+    m.fitBounds(layer.getBounds(),{padding:[18,18],maxZoom:14});
+    const distKm=(d.routes[0].distance/1000).toFixed(1);
+    const mins=Math.round(d.routes[0].duration/60);
+    const lbl=document.getElementById(lblId);
+    if(lbl){ lbl.textContent=`🚕 ${distKm} km · ~${mins} min`; lbl.style.display='block'; }
+  }catch(e){
+    if(maps[mapId])maps[mapId].fitBounds(L.latLngBounds([from,to]),{padding:[28,28]});
+  }
+}
+
+/* ── INIT MAPAS ESTÁTICOS ── */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const m=mkMap('map-origen',ORIGEN,15); hideLoad('ml-origen');
+    L.marker(ORIGEN,{icon:mkIco('🏠',26)}).addTo(m).bindPopup('Jorge Cruz · Plaza Kukulcán');
+    L.marker([21.1395,-86.7435],{icon:mkIco('🚕',22)}).addTo(m).bindPopup('ECO-110 · 2 min');
+    L.marker([21.1375,-86.7462],{icon:mkIco('🚗',22)}).addTo(m).bindPopup('ECO-205 · 4 min');
+    L.marker([21.1360,-86.7448],{icon:mkIco('🚙',22)}).addTo(m).bindPopup('ECO-308 · 6 min');
+    setTimeout(()=>m.invalidateSize(),200);
+  },300);
+  setTimeout(()=>{
+    const m=mkMap('map-cond',COND_POS,15); hideLoad('ml-cond');
+    L.marker(COND_POS,{icon:mkIco('🚕',28)}).addTo(m).bindPopup('ECO-110 · Carlos Méndez');
+    setTimeout(()=>m.invalidateSize(),200);
+  },500);
+});
+
+/* ── UI HELPERS ── */
+function selUnit(c){ document.querySelectorAll('.unit-card').forEach(x=>x.classList.remove('sel')); c.classList.add('sel'); }
+function selTip(b){ document.querySelectorAll('.tip-btn').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); }
+function selDay(d){ document.querySelectorAll('.cal-day:not(.dis)').forEach(x=>x.classList.remove('sel')); d.classList.add('sel'); }
+function selTime(t){ document.querySelectorAll('.tslot:not(.busy)').forEach(x=>x.classList.remove('sel')); t.classList.add('sel'); }
+function selResType(el,tipo){ document.querySelectorAll('.res-type').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); tipoRes=tipo; }
+function showP(id){ ['p-inicio','p-reserva','p-confirmado'].forEach(s=>{ const el=document.getElementById(s); if(el){ s===id?el.classList.add('active'):el.classList.remove('active'); }}); }
+function showC(id){ ['c-home','c-solicitud','c-aceptado'].forEach(s=>{ const el=document.getElementById(s); if(el){ s===id?el.classList.add('active'):el.classList.remove('active'); }}); }
+
+/* ── SELECCIONAR DESTINO ── */
+function selDest(el,key){
+  document.querySelectorAll('.dest-opt').forEach(x=>x.classList.remove('sel')); el.classList.add('sel');
+  curDest=key;
+  const d=DESTINOS[key]; const t=calcTarifa(key,paxCount);
+  const btn=document.getElementById('btn-continuar');
+  btn.textContent=`Ir a ${d.n} · $${t.total}`;
+  btn.style.opacity='1'; btn.style.pointerEvents='all';
+}
+
+/* ── CAMBIO PASAJEROS ── */
+function chgPax(delta){
+  paxCount=Math.max(1,Math.min(6,paxCount+delta));
+  document.getElementById('pax-n').textContent=paxCount;
+  if(curDest) actualizarPrecios();
+}
+
+function actualizarPrecios(){
+  if(!curDest)return;
+  const d=DESTINOS[curDest]; const t=calcTarifa(curDest,paxCount);
+  document.getElementById('p-ruta-lbl-card').textContent=`Plaza Kukulcán → ${d.n}`;
+  document.getElementById('p-precio-total').textContent=`$${t.total}`;
+  document.getElementById('p-km-row').textContent=`Distancia (${d.km} km × $8.50)`;
+  document.getElementById('p-km-val').textContent=`$${t.kmC}`;
+  document.getElementById('p-zona-row').textContent=d.zona?'Zona Hotelera (+15%)':'Sin recargo de zona';
+  document.getElementById('p-zona-val').textContent=d.zona?`+$${t.zona}`:'$0.00';
+  document.getElementById('p-zona-val').style.color=d.zona?'var(--gold)':'var(--gray-l)';
+  document.getElementById('p-total').textContent=`$${t.total}`;
+  document.getElementById('p-btn-precio').textContent=`$${t.total}`;
+}
+
+/* ── IR A RESERVA ── */
+async function irAReserva(){
+  if(!curDest)return;
+  const d=DESTINOS[curDest];
+  document.getElementById('p-res-sub').textContent=`Plaza Kukulcán → ${d.n}`;
+  actualizarPrecios();
+  showP('p-reserva');
+  setTimeout(async()=>{
+    const m=mkMap('map-ruta-p',ORIGEN,13); hideLoad('ml-ruta-p');
+    L.marker(ORIGEN,{icon:mkIco('🏠',24)}).addTo(m).bindPopup('Jorge Cruz');
+    L.marker(d.coord,{icon:mkIco(d.ico,24)}).addTo(m).bindPopup(d.n);
+    m.invalidateSize();
+    await drawRoute('map-ruta-p',ORIGEN,d.coord,'lbl-ruta-p');
+  },300);
+}
+
+/* ── CONFIRMAR SERVICIO ── */
+async function confirmarServicio(){
+  if(!curDest)return;
+  const d=DESTINOS[curDest]; const t=calcTarifa(curDest,paxCount);
+  document.getElementById('conf-dest').textContent=d.n;
+  document.getElementById('conf-total').textContent=`$${t.total}`;
+  showP('p-confirmado');
+  setTimeout(async()=>{
+    const m=mkMap('map-vivo-p',ORIGEN,14); hideLoad('ml-vivo-p');
+    L.marker(ORIGEN,{icon:mkIco('🏠',24)}).addTo(m).bindPopup('Jorge Cruz · Plaza Kukulcán');
+    L.marker(COND_POS,{icon:mkIco('🚕',26)}).addTo(m).bindPopup('Carlos · ECO-110 · En camino');
+    L.marker(d.coord,{icon:mkIco(d.ico,20)}).addTo(m).bindPopup(d.n);
+    m.invalidateSize();
+    await drawRoute('map-vivo-p',COND_POS,ORIGEN,'map-lbl-vivo');
+  },300);
+  setTimeout(()=>notificarConductor(d,t),900);
+  // Animate connector on sync
+  setTimeout(()=>{
+    const conn=document.querySelector('.connector-line');
+    if(conn) conn.classList.add('sync-active');
+  },950);
+}
+
+/* ── INICIAR NAVEGACIÓN ── */
+function iniciarNav(){
+  const toast=document.createElement('div');
+  toast.textContent='🗺️ Navegación iniciada — ¡Buen viaje, Carlos!';
+  toast.style.cssText='position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:14px 24px;border-radius:30px;font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:9999;animation:fadeUp .35s ease both;';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),3200);
+}
+
+/* ── NOTIFICAR CONDUCTOR ── */
+async function notificarConductor(d,t){
+  // Solo muestra la ganancia del conductor SIN porcentajes
+  document.getElementById('c-ganancia-monto').textContent=`$${t.cond}`;
+  document.getElementById('c-ganancia-sub').textContent=`${d.km} km · ~${d.t} min · Pago al completar`;
+  document.getElementById('c-dest-titulo').textContent=d.n;
+  document.getElementById('c-dest-dir').textContent=d.dir;
+  document.getElementById('c-pax-val').textContent=paxCount===1?'1 persona':`${paxCount} personas`;
+  document.getElementById('c-tipo-res').textContent=tipoRes==='unico'?'Único viaje':tipoRes==='semanal'?'Semanal (Lun–Dom)':'Mensual (30 días)';
+  document.getElementById('c-btn-monto').textContent=`$${t.cond}`;
+  document.getElementById('c-sync-lbl').innerHTML='<div class="sync-dot"></div>¡Nueva solicitud de Jorge Cruz!';
+  showC('c-solicitud');
+  setTimeout(async()=>{
+    const m=mkMap('map-ruta-c',ORIGEN,13); hideLoad('ml-ruta-c');
+    L.marker(COND_POS,{icon:mkIco('🚕',24)}).addTo(m).bindPopup('Tu posición · ECO-110');
+    L.marker(ORIGEN,{icon:mkIco('👤',22)}).addTo(m).bindPopup('Jorge Cruz · Plaza Kukulcán');
+    L.marker(d.coord,{icon:mkIco(d.ico,20)}).addTo(m).bindPopup(d.n);
+    m.invalidateSize();
+    await drawRoute('map-ruta-c',ORIGEN,d.coord,'lbl-ruta-c');
+  },300);
+}
+
+/* ── ACEPTAR SERVICIO ── */
+async function aceptar(){
+  if(!curDest)return;
+  const d=DESTINOS[curDest]; const t=calcTarifa(curDest,paxCount);
+  document.getElementById('c-ganancia-final').textContent=`$${t.cond}`;
+  document.getElementById('c-aceptado-dest').textContent=d.dir;
+  document.getElementById('c-aceptado-km').textContent=`${d.km} km`;
+  document.getElementById('c-aceptado-tiempo').textContent=`~${d.t+2} min`;
+  showC('c-aceptado');
+  setTimeout(async()=>{
+    const m=mkMap('map-acepto',COND_POS,13); hideLoad('ml-acepto');
+    L.marker(COND_POS,{icon:mkIco('🚕',26)}).addTo(m).bindPopup('Tú · ECO-110');
+    L.marker(ORIGEN,{icon:mkIco('👤',22)}).addTo(m).bindPopup('Jorge Cruz');
+    L.marker(d.coord,{icon:mkIco(d.ico,22)}).addTo(m).bindPopup(d.n);
+    m.invalidateSize();
+    document.getElementById('lbl-acepto').textContent=`${d.km} km · ~${d.t+2} min`;
+    await drawRoute('map-acepto',COND_POS,d.coord,'lbl-acepto');
+  },300);
+}
+
+/* ── RECHAZAR ── */
+function rechazar(){
+  showC('c-home');
+  document.getElementById('c-sync-lbl').innerHTML='<div class="sync-dot"></div>Disponible · Sin solicitudes activas';
+}
+</script>
+</body>
+</html>
